@@ -1,47 +1,58 @@
-﻿<!DOCTYPE html>
-<html>
-<script src="js/angular.min.js"></script>
-<script src="js/angular-route.js"></script>
-
-<body ng-app="travelBlogApp">
-
-<p><a href="#/">Start</a></p>
-
-<a href="#posts">Ostatnie posty</a>
-<a href="#contact">Kontakt</a>
-
+﻿<html lang="en" >
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  
+</head>
+<body ng-app="travelBlogApp" ng-cloak>
  
-<div ng-view></div>
-
-<script>
-var app = angular.module("travelBlogApp", ["ngRoute"]);
-app.config(function($routeProvider) {
-    $routeProvider
-    .when("/", {
-        templateUrl : "start.html",
-    })
-    .when("/posts", {
-        templateUrl : "posts.html",
-        controller : "postsCtrl"
-    })
-    .when("/contact", {
-        templateUrl : "contact.html",
-        controller : "contactCtrl"
-    }); 
-});
-app.controller('CountryCtrl', function ($scope, $http){
+  <md-content class="md-padding">
+    <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
+      <md-nav-item md-nav-href="#/" name="start">Start</md-nav-item>
+      <md-nav-item md-nav-href="#posts" name="posts">Ostatnie posty</md-nav-item>
+      <md-nav-item md-nav-href="#contact" name="contact">Kontakt</md-nav-item>  
+    </md-nav-bar>
+  </md-content>
  
-});
-app.controller("postsCtrl", function ($scope, $http ) {
-    $http.get('https://klaudiusz.eu/wordpress/wp-json/wp/v2/posts').success(function(data) {
-      $scope.posts = data;
+  <div ng-view></div>
+  
+   
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+ 
+  <script type="text/javascript">    
+    var app = angular.module("travelBlogApp", ["ngRoute", "ngMaterial"]);
+    app.config(function($routeProvider) {
+        $routeProvider
+        .when("/", {
+            templateUrl : "start.html",
+        })
+        .when("/posts", {
+            templateUrl : "posts.html",
+            controller : "postsCtrl"
+        })
+        .when("/contact", {
+            templateUrl : "contact.html",
+            controller : "contactCtrl"
+        }); 
     });
-});
-app.controller("contactCtrl", function ($scope) {
-    $scope.msg = "Strona kontaktowa";
-});
-
-</script>
- 
+    app.controller('CountryCtrl', function ($scope, $http){
+     
+    });
+    app.controller("postsCtrl", function ($scope, $http ) {
+        $http.get('https://klaudiusz.eu/wordpress/wp-json/wp/v2/posts').success(function(data) {
+          $scope.posts = data;
+        });
+    });
+    app.controller("contactCtrl", function ($scope) {
+        $scope.msg = "Strona kontaktowa";
+    });
+     
+  </script>
+  
 </body>
 </html>
