@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<script src="js/angular.min.js"></script>
+<script src="js/angular-route.js"></script>
+
+<body ng-app="travelBlogApp">
+
+<p><a href="#/">Start</a></p>
+
+<a href="#posts">Ostatnie posty</a>
+<a href="#contact">Kontakt</a>
+
+ 
+<div ng-view></div>
+
+<script>
+var app = angular.module("travelBlogApp", ["ngRoute"]);
+app.config(function($routeProvider) {
+    $routeProvider
+    .when("/", {
+        templateUrl : "start.html",
+    })
+    .when("/posts", {
+        templateUrl : "posts.html",
+        controller : "postsCtrl"
+    })
+    .when("/contact", {
+        templateUrl : "contact.html",
+        controller : "contactCtrl"
+    }); 
+});
+app.controller("postsCtrl", function ($scope) {
+    $scope.msg = "lista postów";
+});
+app.controller("contactCtrl", function ($scope) {
+    $scope.msg = "Strona kontaktowa";
+});
+
+</script>
+
+</body>
+</html>
