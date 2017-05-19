@@ -1,3 +1,7 @@
 <h1>Posty</h1>
  
-<p>{{msg}}</p>
+ <div ng-controller="postsCtrl">
+   <ul >
+    <li ng-repeat="post in posts"> {{ post.title.rendered}} </li>
+</ul>
+</div>

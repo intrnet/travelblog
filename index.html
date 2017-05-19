@@ -29,14 +29,19 @@ app.config(function($routeProvider) {
         controller : "contactCtrl"
     }); 
 });
-app.controller("postsCtrl", function ($scope) {
-    $scope.msg = "lista postów";
+app.controller('CountryCtrl', function ($scope, $http){
+ 
+});
+app.controller("postsCtrl", function ($scope, $http ) {
+    $http.get('https://klaudiusz.eu/wordpress/wp-json/wp/v2/posts').success(function(data) {
+      $scope.posts = data;
+    });
 });
 app.controller("contactCtrl", function ($scope) {
     $scope.msg = "Strona kontaktowa";
 });
 
 </script>
-
+ 
 </body>
 </html>
