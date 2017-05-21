@@ -1,20 +1,54 @@
-﻿<html lang="en" >
+﻿<html lang="en" ng-app="travelBlogApp">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <link rel="stylesheet" href="css/styles.css">
   
 </head>
-<body ng-app="travelBlogApp" ng-cloak>
- <div layout="row">
-  <md-content class="md-padding">
-    <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
-      <md-nav-item md-nav-href="#/" name="start">Start</md-nav-item>
-      <md-nav-item md-nav-href="#posts" name="posts">Ostatnie posty</md-nav-item>
-      <md-nav-item md-nav-href="#contact" name="contact">Kontakt</md-nav-item>  
-    </md-nav-bar>
-  </md-content>
- </div>
-  <div ng-view></div>
+<body layout="row" ng-controller="AppCtrl" ng-cloak>
+ 
+ <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+      <md-toolbar class="md-tall md-hue-2 tb-toolbar-bg">
+        <span flex></span>
+        <div layout="column" class="md-toolbar-tools-bottom inset tb-toolbar-box">
+          <user-avatar></user-avatar>
+          <h3>Travel Blog</h3>
+          <h4>Pamiętnik podróżnika</h4>
+        </div>
+      </md-toolbar>
+      <md-list>
+        
+      <md-list-item ng-repeat="item in menu">
+       <a ng-href="{{item.link}}" class="tb-sidebar-link" ng-click="closeSidebar()">  
+          <md-item-content md-ink-ripple layout="row" layout-align="start center">
+            <div class="inset">
+              <ng-md-icon icon="{{item.icon}}"></ng-md-icon>
+            </div>
+            <div class="inset">{{item.title}}
+            </div>
+          </md-item-content>
+        </a>
+      </md-list-item>
+      <md-divider></md-divider>
+      <md-subheader>Tymczasowe</md-subheader>
+      <md-list-item ng-repeat="item in temp">
+        <a ng-href="{{item.link}}" class="tb-sidebar-link" ng-click="closeSidebar()">
+          <md-item-content md-ink-ripple layout="row" layout-align="start center">
+            <div class="inset">
+              <ng-md-icon icon="{{item.icon}}"></ng-md-icon>
+            </div>
+            <div class="inset">{{item.title}}
+            </div>
+          </md-item-content>
+        </a>
+      </md-list-item>
+    </md-list>
+  </md-sidenav>
+  
+  <div layout="column" class="relative" layout-fill role="main" ng-cloak>
+      <div ng-view></div>
+  </div>
+        
   
    
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
@@ -23,58 +57,150 @@
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.js"></script>
-  
   <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
- 
+  <script src="http://cdn.jsdelivr.net/angular-material-icons/0.7.0/angular-material-icons.min.js"></script> 
   <script type="text/javascript">    
-    var app = angular.module("travelBlogApp", ["ngRoute", "ngMaterial", "ngSanitize"]);
+    var app = angular.module("travelBlogApp", ["ngRoute", "ngMaterial", "ngSanitize", "ngMdIcons"]);
+    
     app.config(function($routeProvider) {
         $routeProvider
         .when("/", {
-            templateUrl : "start.html",
+            templateUrl : "places.html",
         })
-        .when("/posts", {
-            templateUrl : "posts.html",
-            controller : "postsCtrl"
+        .when("/places", {
+            templateUrl : "places.html",
+            controller : "placesCtrl"
         })
-        .when("/post/:id", {
-            templateUrl : "post.html",
-            controller : "postCtrl"
+        .when("/place/:id", {
+            templateUrl : "place.html",
+            controller : "placeCtrl"
         })
         .when("/contact", {
             templateUrl : "contact.html",
             controller : "contactCtrl"
+        })
+        .when("/notes", {
+            templateUrl : "notes.html",
+            controller : "notesCtrl"
+        })
+        .when("/users", {
+            templateUrl : "users.html",
+            controller : "usersCtrl"
         }); 
     });
-    app.controller('CountryCtrl', function ($scope, $http){
-     
-    });
-    app.controller("postsCtrl", function ($scope, $http) {
+  
+    app.controller('AppCtrl', ['$scope', '$mdBottomSheet','$mdSidenav', '$mdDialog', function($scope, $mdBottomSheet, $mdSidenav, $mdDialog){
+      $scope.toggleSidenav = function(menuId) {
+        $mdSidenav(menuId).toggle();
+      };
+
+      $scope.closeSidebar = function () {
+            $mdSidenav('left').close();
+
+        };
+      $scope.menu = [
+        {
+          link : '#places',
+          title: 'Miejsca',
+          icon: 'place'
+        },
+        {
+          link : '#users',
+          title: 'Osoby',
+          icon: 'group'
+        },
+        {
+          link : '#contact',
+          title: 'Kontakt',
+          icon: 'email'
+        }
+      ];
+      $scope.temp = [
+        {
+          link : '#notes',
+          title: 'Notatki',
+          icon: 'note'
+        } 
+      ];
+      
+      $scope.alert = '';
+      $scope.showListBottomSheet = function($event) {
+        $scope.alert = '';
+        $mdBottomSheet.show({
+          template: '<md-bottom-sheet class="md-list md-has-header"> <h2>Wybierz opcję</h2> <md-list> <md-list-item ng-repeat="item in items"> <div class="inset"><ng-md-icon icon="{{item.icon}}"></ng-md-icon></div><md-item-content md-ink-ripple flex class="inset"> <a flex aria-label="{{item.name}}" ng-click="listItemClick($index)"> <span class="md-inline-list-icon-label">{{ item.name }}</span> </a></md-item-content> </md-list-item> </md-list></md-bottom-sheet>',
+          controller: 'ListBottomSheetCtrl',
+          targetEvent: $event
+        }).then(function(clickedItem) {
+          $scope.alert = clickedItem.name + ' clicked!';
+        });
+      };
+      
+ 
+    }]);
+
+    app.controller("placesCtrl", ["$scope", "$http", "$mdBottomSheet", "$mdSidenav", "$mdDialog", function($scope, $http, $mdBottomSheet, $mdSidenav, $mdDialog){
 
        $http.get('http://klaudiusz.eu/wordpress/api/get_recent_posts/').success(function(data) {
-          $scope.posts = data.posts;
+          $scope.places = data.posts;
         });
-        // $scope.posts = [];
+             
+    }]);
 
-        // $http.get('https://klaudiusz.eu/wordpress/wp-json/wp/v2/posts').success(function(posts) {
-        //     angular.forEach(posts, function(data) {
-        //        $http.get('https://klaudiusz.eu/wordpress/wp-json/wp/v2/media/'+ data.featured_media).
-        //         success(function(media) {
-        //           $scope.posts.push(angular.extend(data,media));
-        //        });
-        //     });
-        // });
-     
-    });
-     app.controller("postCtrl", function ($scope, $http, $routeParams ) {
+    app.controller("placeCtrl", function ($scope, $http, $routeParams ) {
         $http.get('https://klaudiusz.eu/wordpress/wp-json/wp/v2/posts/' + $routeParams.id).success(function(data) {
-          $scope.post = data;
+          $scope.place = data;
         });
     });
+    
     app.controller("contactCtrl", function ($scope) {
         $scope.msg = "Strona kontaktowa";
     });
-     
+
+    app.controller("notesCtrl", function ($scope) {
+        $scope.msg = "Notatki";
+    });
+
+    app.controller("usersCtrl", function ($scope) {
+        $scope.msg = "Osoby";
+    });
+
+    app.controller('ListBottomSheetCtrl', function($scope, $mdBottomSheet) {
+      $scope.items = [
+        { name: 'Udostępnij notatki', icon: 'share' },   
+        { name: 'Pobierz notatki', icon: 'picture_as_pdf' },
+      ];
+      
+      $scope.listItemClick = function($index) {
+        var clickedItem = $scope.items[$index];
+        $mdBottomSheet.hide(clickedItem);
+      };
+    });
+
+    app.config(function($mdThemingProvider) {
+      var customBlueMap =     $mdThemingProvider.extendPalette('light-blue', {
+        'contrastDefaultColor': 'light',
+        'contrastDarkColors': ['50'],
+        '50': 'ffffff'
+      });
+      $mdThemingProvider.definePalette('customBlue', customBlueMap);
+      $mdThemingProvider.theme('default')
+        .primaryPalette('customBlue', {
+          'default': '500',
+          'hue-1': '50'
+        })
+        .accentPalette('pink');
+      $mdThemingProvider.theme('input', 'default')
+            .primaryPalette('grey')
+    }); 
+
+    
+
+    app.directive('userAvatar', function() {
+      return {
+        replace: true,
+        template: '<img width="70" ng-src="images/klaudiusz.jpg" alt="klaudiusz" class="user-avatar">'
+      };
+    });
   </script>
   
 </body>
