@@ -1,72 +1,92 @@
-  <div ng-controller="placesCtrl">
+<md-content ng-controller="placesCtrl" layout-fill layout="column" id="places">  <!-- ng-init="readyMap()" -->
       <md-button class="md-fab md-fab-bottom-right" aria-label="Dodaj notatkę" ng-click="showAdd($event)">
         <ng-md-icon icon="add"></ng-md-icon>
-      </md-button>
-      <md-toolbar ng-show="!showSearch">
-        <div class="md-toolbar-tools">
-          <md-button ng-click="toggleSidenav('left')" hide-gt-md aria-label="Menu">
-            <ng-md-icon icon="menu"></ng-md-icon>
-          </md-button>
-          <h3>
-            Miejsca
-          </h3>
-          <span flex></span>
-          <md-button aria-label="Szukaj" ng-click="showSearch = !showSearch">
-            <ng-md-icon icon="search"></ng-md-icon>
-          </md-button>
-          
-        </div>
-         <md-content class="md-padding">
-          <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
-            <md-nav-item md-nav-href="#places" name="places">Ostatnie miejsca</md-nav-item>
-            <md-nav-item md-nav-href="#notes" name="notes">Notatki</md-nav-item>  
-          </md-nav-bar>
+      </md-button>  
+  <div layout="row" style="height:116px;">
+   <md-content layout="column" flex="100">
+  
+       <md-content layout="row" style="height:70px;" ng-show="!showSearch" >
+          <md-toolbar flex="100" layout="column" ng-show="!showSearch">
+            <div class="md-toolbar-tools">
+              <md-button ng-click="toggleSidenav('left')" hide-gt-md aria-label="Menu">
+                <ng-md-icon icon="menu"></ng-md-icon>
+              </md-button>
+              <h3>
+                Miejsca
+              </h3>
+              <span flex></span>
+              <md-button aria-label="Szukaj" ng-click="showSearch = !showSearch">
+                <ng-md-icon icon="search"></ng-md-icon>
+              </md-button>
+            </div>
+          </md-toolbar>
         </md-content>
-      </md-toolbar>
-      <md-toolbar class="md-hue-1" ng-show="showSearch">
-        <div class="md-toolbar-tools">
-          <md-button ng-click="showSearch = !showSearch" aria-label="Cofnij">
-            <ng-md-icon icon="arrow_back"></ng-md-icon>
-          </md-button>
-          <h3 flex="10">
-            Cofnij
-          </h3>
-          <md-input-container md-theme="input" flex>
-            <label>&nbsp;</label>
-            <input ng-model="search.who" placeholder="szukaj">
-          </md-input-container>
-          <md-button aria-label="Szukaj" ng-click="showSearch = !showSearch">
-            <ng-md-icon icon="search"></ng-md-icon>
-          </md-button>
 
-        </div>
-       
-      </md-toolbar>
-      <md-content flex md-scroll-y>
-     
+         <md-content layout="row" style="height:116px;" ng-show="showSearch">
+          <md-toolbar class="md-hue-1" ng-show="showSearch" flex="100" layout="column">
+            <div class="md-toolbar-tools" layout="row" flex="100">
+              
+              <md-button ng-click="showSearch = !showSearch" aria-label="Cofnij">
+                <ng-md-icon icon="arrow_back"></ng-md-icon>
+              </md-button>
+              
+              <h3>Cofnij</h3>
+              <span layout="row" flex="5"></span>
+              <md-input-container md-theme="input" layout="row" flex="95">
+                <label>&nbsp;</label>
+                <input ng-model="search.who" placeholder="szukaj">
+              </md-input-container>
 
-            <md-content flex>
+              <md-button aria-label="Szukaj" ng-click="showSearch = !showSearch">
+                <ng-md-icon icon="search"></ng-md-icon>
+              </md-button>
 
-              <md-list>
+           </div>
+          </md-toolbar>
+        </md-content>
 
-                <md-list-item class="md-3-line" ng-repeat="place in places" ng-href="#place/{{place.id}}">
-                  <img ng-src="{{place.thumbnail_images.thumbnail.url}}" alt="{{place.featured_media}}" class="md-avatar">
+         <md-content layout="row" style="height:60px;" ng-show="!showSearch">
+          <md-toolbar layout="column" class="md-hue-1">
+              <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
+                <md-nav-item md-nav-href="#places" name="places">Ostatnie miejsca</md-nav-item>
+                <md-nav-item md-nav-href="#notes" name="notes">Notatki</md-nav-item>  
+              </md-nav-bar>
+           </md-toolbar>
+          </md-content>
 
+      </md-content>
+  </div>
+ 
+  <div layout="row" style="height:100%">
+    <div layout="column" flex="75" hide show-gt-sm ng-cloak>
+      <md-content layout="column" flex="100" id="map"></md-content>
+    </div>
+    <div flex class="md-whiteframe-z2" layout="column">
+      <md-content layout="column" layout="column" flex="100">
+            <md-list class="places_list">
+                <md-list-item class="md-3-line" ng-repeat="marker in markers" ng-click="openInfoWindow($event, marker)" hide-sm hide-xs>
+                  <img ng-src="{{marker.thumbnail}}" alt="{{marker.title}}" class="md-avatar">
                   <div class="md-list-item-text">
-                   
-                    <h3>{{place.title}}</h3>
-                    <h4>{{place.date}}</h4>
-
-                    <p ng-bind-html="place.excerpt">
                      
-                    </p>
+                    <h3>{{marker.title}}</h3>
+                    <h4>{{marker.date}}</h4>
+                     
                   </div>
                   <md-divider inset></md-divider>
-                </md-list-item>
+                </md-list-item>  
+                <md-list-item class="md-3-line" ng-repeat="marker in markers" ng-href="#place/{{marker.id}}" hide-gt-sm>
+                  <img ng-src="{{marker.thumbnail}}" alt="{{marker.title}}" class="md-avatar">
+                  <div class="md-list-item-text">
+                     
+                    <h3>{{marker.title}}</h3>
+                    <h4>{{marker.date}}</h4>
+                     
+                    <!-- <p ng-bind-html="place.excerpt"></p> -->
+                  </div>
+                  <md-divider inset></md-divider>
+                </md-list-item>  
 
-              </md-list>
-
-            </md-content>
- 
+            </md-list>
       </md-content>
-    </div>
+  </div>
+</md-content>

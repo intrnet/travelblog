@@ -66,3 +66,26 @@ md-sidenav {
     -o-background-size: cover !important;
     background-size: cover !important;
 }
+
+
+ #places md-toolbar{
+    min-height: inherit;
+  }
+      #map {
+    position:relative;
+    overflow: hidden;
+ 
+}
+img {max-width: initial !important;}
+.infoWindowContent {
+    font-size:  14px !important;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+}
+h2 {
+    margin-bottom:0;
+    margin-top: 0;
+}
+.places_list {
+  padding-top: 0;
+}

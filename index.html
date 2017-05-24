@@ -1,9 +1,13 @@
 ﻿<html lang="en" ng-app="travelBlogApp">
 <head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
   <link rel="stylesheet" href="css/styles.css">
-  
+ 
 </head>
 <body layout="row" ng-controller="AppCtrl" ng-cloak>
  
@@ -45,12 +49,9 @@
     </md-list>
   </md-sidenav>
   
-  <div layout="column" class="relative" layout-fill role="main" ng-cloak>
-      <div ng-view></div>
-  </div>
+  <md-content layout-fill  layout="column"  ng-view></md-content>
         
-  
-   
+  <script type="text/javascript" src="https://klaudiusz.eu/wordpress/wp-content/themes/twentysixteen/js/jquery-2.1.1.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-sanitize.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
@@ -59,33 +60,31 @@
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
   <script src="http://cdn.jsdelivr.net/angular-material-icons/0.7.0/angular-material-icons.min.js"></script> 
+  <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkYLhXi73VHa5nABuDwHOE8EBEA8IDnRg"> </script>
   <script type="text/javascript">    
     var app = angular.module("travelBlogApp", ["ngRoute", "ngMaterial", "ngSanitize", "ngMdIcons"]);
     
     app.config(function($routeProvider) {
         $routeProvider
         .when("/", {
-            templateUrl : "places.html",
+            templateUrl : "places.html" 
         })
         .when("/places", {
-            templateUrl : "places.html",
-            controller : "placesCtrl"
+            templateUrl : "places.html" 
         })
         .when("/place/:id", {
             templateUrl : "place.html",
             controller : "placeCtrl"
         })
         .when("/contact", {
-            templateUrl : "contact.html",
-            controller : "contactCtrl"
+            templateUrl : "contact.html" 
         })
         .when("/notes", {
-            templateUrl : "notes.html",
-            controller : "notesCtrl"
+            templateUrl : "notes.html" 
         })
         .when("/users", {
-            templateUrl : "users.html",
-            controller : "usersCtrl"
+            templateUrl : "users.html" 
         }); 
     });
   
@@ -135,17 +134,73 @@
         });
       };
       
- 
+      
+
     }]);
 
     app.controller("placesCtrl", ["$scope", "$http", "$mdBottomSheet", "$mdSidenav", "$mdDialog", function($scope, $http, $mdBottomSheet, $mdSidenav, $mdDialog){
+ 
+      $http.get('http://klaudiusz.eu/wordpress/api/get_recent_posts/').success(function(data) {
+               
+              }).then(function successCallback(response) {
+                      
+                      $scope.places = response.data.posts;
+                      
+                     
+                      var mapOptions = {
+                            zoom: 6,
+                            center: new google.maps.LatLng(51.919438, 19.145136),
+                            mapTypeId: google.maps.MapTypeId.TERRAIN
+                        }
 
-       $http.get('http://klaudiusz.eu/wordpress/api/get_recent_posts/').success(function(data) {
-          $scope.places = data.posts;
-        });
-             
+                        $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+                        $scope.markers = [];
+                        
+                        var infoWindow = new google.maps.InfoWindow();
+                        
+                        var createMarker = function (info){
+                         
+                            var marker = new google.maps.Marker({
+                                map: $scope.map,
+                                position: new google.maps.LatLng(info.custom_fields.lat[0], info.custom_fields.lng[0]),
+                                title: info.title,
+                                thumbnail: info.thumbnail_images.thumbnail.url,
+                                id: info.id,
+                                date: info.date
+                            });
+
+                            marker.content = '<div class="infoWindowContent"><a ng-href="#place/'+info.id+'">zobacz</a></div>';
+                            
+                            google.maps.event.addListener(marker, 'click', function(){
+                                infoWindow.setContent('<h2>' + marker.title + '</h2>' + marker.content);
+                                infoWindow.open($scope.map, marker);
+                            });
+
+                           
+                            $scope.markers.push(marker);
+                            
+                        }  
+                        
+                        for (i = 0; i <  response.data.posts.length; i++){
+                            createMarker(response.data.posts[i]);
+                        }
+
+                        $scope.openInfoWindow = function(e, selectedMarker){
+                   
+                            e.preventDefault();
+                            google.maps.event.trigger(selectedMarker, 'click');
+                        }
+       
+
+              }, function errorCallback(response) {
+                    console.log('błąd pobierania danych');
+              });
+              
     }]);
-
+ 
+   
+ 
     app.controller("placeCtrl", function ($scope, $http, $routeParams ) {
         $http.get('https://klaudiusz.eu/wordpress/wp-json/wp/v2/posts/' + $routeParams.id).success(function(data) {
           $scope.place = data;
@@ -193,7 +248,17 @@
             .primaryPalette('grey')
     }); 
 
-    
+    function DialogController($scope, $mdDialog) {
+      $scope.hide = function() {
+        $mdDialog.hide();
+      };
+      $scope.cancel = function() {
+        $mdDialog.cancel();
+      };
+      $scope.answer = function(answer) {
+        $mdDialog.hide(answer);
+      };
+    };
 
     app.directive('userAvatar', function() {
       return {
@@ -203,5 +268,6 @@
     });
   </script>
   
+   
 </body>
 </html>
