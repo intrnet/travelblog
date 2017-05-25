@@ -7,7 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
   <link rel="stylesheet" href="css/styles.css">
- 
+ <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue-light_blue.min.css" /> 
+ <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 <body layout="row" ng-controller="AppCtrl" ng-cloak>
  
@@ -165,9 +166,10 @@
                                 map: $scope.map,
                                 position: new google.maps.LatLng(info.custom_fields.lat[0], info.custom_fields.lng[0]),
                                 title: info.title,
-                                thumbnail: info.thumbnail_images.thumbnail.url,
+                                thumbnail: info.thumbnail_images.tb_size.url,
                                 id: info.id,
-                                date: info.date
+                                date: info.date,
+                                excerpt: info.excerpt
                             });
 
                             marker.content = '<div class="infoWindowContent"><a ng-href="#place/'+info.id+'">zobacz</a></div>';
@@ -184,15 +186,14 @@
                         
                         for (i = 0; i <  response.data.posts.length; i++){
                             createMarker(response.data.posts[i]);
-                        }
+                                                }
 
                         $scope.openInfoWindow = function(e, selectedMarker){
                    
                             e.preventDefault();
                             google.maps.event.trigger(selectedMarker, 'click');
                         }
-       
-
+ 
               }, function errorCallback(response) {
                     console.log('błąd pobierania danych');
               });
