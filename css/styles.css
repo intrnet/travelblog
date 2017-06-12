@@ -108,3 +108,34 @@ h2 {
     margin-right: 3px;
     margin-left: 3px;
 }
+
+
+.mdl-card__supporting-text {
+  padding: 0 16px !important;
+}
+
+.mdl-card__supporting-text p {
+  font-size: 12px;
+}
+
+.mdl-card__title h1 {
+  font-size: 18px !important;
+}
+
+.map_box {
+  position: relative;
+}
+
+#floating-panel {
+      
+        top: 10px;
+        left: 25%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }

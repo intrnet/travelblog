@@ -197,6 +197,8 @@
               }, function errorCallback(response) {
                     console.log('błąd pobierania danych');
               });
+
+
               
     }]);
  
@@ -213,7 +215,293 @@
     });
 
     app.controller("notesCtrl", function ($scope) {
+        $scope.info_box = false;
+        var marker_red = 'http://klaudiusz.eu/travelblog/images/marker-r.png';
+        var marker_white = 'http://klaudiusz.eu/travelblog/images/marker.png';
+        var marker_green = 'http://klaudiusz.eu/travelblog/images/marker-g.png';
+        $scope.marker_green = 'http://klaudiusz.eu/travelblog/images/marker-g.png';
+        
         $scope.msg = "Notatki";
+        $scope.label_id = 0;
+        $scope.markers = [];
+        $scope.temporary_markers = {};
+        $scope.clicked_marker;
+        $scope.geocoder = new google.maps.Geocoder();
+        $scope.map_notes = new google.maps.Map(document.getElementById('map_notes'), {
+                                zoom: 6,
+                                center: {lat: 51.919438, lng: 19.145136 },
+                                mapTypeControl: true,
+                                mapTypeControlOptions: {
+                                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                                    position: google.maps.ControlPosition.TOP_CENTER
+                                },
+                                zoomControl: true,
+                                zoomControlOptions: {
+                                    position: google.maps.ControlPosition.RIGHT_CENTER
+                                },
+                                scaleControl: true,
+                                streetViewControl: true,
+                                streetViewControlOptions: {
+                                    position: google.maps.ControlPosition.LEFT_TOP
+                                },
+                                fullscreenControl: true
+        });
+
+        $scope.infowindow = new google.maps.InfoWindow({
+                content: null
+             });
+
+        $scope.geoJson = {
+                          "type": "FeatureCollection",
+                          "features": []
+                          };
+
+        $scope.marker_info = {
+                          "id": "",
+                          "name": "",
+                          "description": ""
+                           };
+         
+        function newMarker(position) {
+            clearInfoBox();
+            if ($scope.infowindow) { $scope.infowindow.close(); };
+            //var token = Math.random().toString(36).substr(2, 5) + new Date().getTime();
+            var token = new Date().getTime() + Math.random().toString(36).substr(2, 5);
+            $scope.label_id++; 
+       
+            var label_id = $scope.label_id.toString(); 
+            var marker = new google.maps.Marker({
+                                                  position: position, 
+                                                  map: $scope.map_notes, 
+                                                  draggable: true, 
+                                                  id: token, 
+                                                  feature: {
+                                                        "type": "Feature",
+                                                        "geometry": {
+                                                                      "type": "Point",
+                                                                      "coordinates": [position.lat(), position.lng()]
+                                                              },
+                                                        "properties": {
+                                                                "id": token,
+                                                                "name": $scope.marker_info.name,
+                                                                "description": $scope.marker_info.description
+                                                                }
+                                                  }, 
+                                                  label: label_id,
+                                                  icon: marker_green
+                                                });
+         
+            //ZMIANA KOLORU MARKERA
+            if($scope.markers.length != 0){
+                for (var i = 0; i < $scope.markers.length; i++) {                  
+                     $scope.markers[i].setIcon(marker_white)
+                }
+             };
+
+            //NOWY MARKER - PRZEŁADOWANIE TABLICY Z MARKERAMI 
+            $scope.markers = [];
+            $scope.temporary_markers[token] = marker;
+          
+         
+                for(let x of Object.keys($scope.temporary_markers).sort()){
+                    
+                  
+                    $scope.markers.push($scope.temporary_markers[x]);
+                     
+                      
+                   
+                }
+              
+                  
+            //KLIK MARKERA       
+            marker.addListener('click', function() {
+      
+              
+                  if ($scope.infowindow) { $scope.infowindow.close(); }
+                  $scope.clicked_marker = marker;
+                  $scope.$apply(function() {   $scope.info_box = true;    });
+                  $scope.infowindow.setContent("<h3>"+ marker.feature.properties.name + "</h3><p>" + marker.feature.properties.description + "</p>");
+                   
+                  //OTWIERA INFOWINDOW  
+                  if(marker.feature.properties.name != "") {
+                      for (var i = 0; i < $scope.markers.length; i++) {
+                        if ($scope.markers[i].id == marker.id) {
+                                  $scope.infowindow.open($scope.map_notes, $scope.markers[i]);
+                        }
+                      }  
+                  }
+                    
+                  //ZMIANA KOLORU MARKERA
+                  if($scope.markers.length != 0){
+                      for (var i = 0; i < $scope.markers.length; i++) {                  
+                           $scope.markers[i].setIcon(marker_white)
+                      }
+                  }; 
+                  marker.setIcon(marker_red);    
+
+            
+                
+            });
+
+            //RIGHTCLICK USUNIECIE MARKERA 
+            marker.addListener('rightclick', function() {
+                delMarker(marker);
+            });
+            
+            // PRZESUNIĘCIE MARKERA                   
+            marker.addListener('dragend', function() {
+               marker.addListener('dragstart', function() { var position = marker.getPosition();});
+                if($scope.clicked_marker){
+                   if(marker.id == $scope.clicked_marker.id){
+                       $scope.clicked_marker.feature.geometry.coordinates[0] = marker.position.lat();
+                       $scope.clicked_marker.feature.geometry.coordinates[1] = marker.position.lng();
+                         
+                       $scope.markers = [];
+                       var upd_marker_id = $scope.clicked_marker.id;
+                   
+                       delete $scope.temporary_markers[ upd_marker_id ];
+               
+                       $scope.temporary_markers[ upd_marker_id] = $scope.clicked_marker;
+                    
+                       for(let x of Object.keys($scope.temporary_markers).sort()){
+
+                          $scope.markers.push($scope.temporary_markers[x]);
+                       
+                        }
+
+                    } else {
+                        alert('musisz zaznaczyć marker');
+                        marker.setPosition(position);
+                        
+                    }
+                } else {
+                  alert('musisz zaznaczyć marker');
+                  marker.setPosition(position);
+              
+                }
+            });     
+
+
+        }  // KONIEC NEWMAKER
+
+        // UPDATE MARKERA
+                        
+        google.maps.event.addDomListener(document.getElementById('ok'), 'click', function() {
+
+                $scope.markers = [];
+                var upd_marker_id = $scope.clicked_marker.id;
+               
+                delete $scope.temporary_markers[ upd_marker_id ];
+
+                $scope.clicked_marker.feature.properties.name = $scope.marker_info.name;
+                $scope.clicked_marker.feature.properties.description = $scope.marker_info.description;            
+                $scope.temporary_markers[ upd_marker_id] = $scope.clicked_marker;
+
+                
+                for(let x of Object.keys($scope.temporary_markers).sort()){
+                 
+                 
+                    $scope.markers.push($scope.temporary_markers[x]);
+                   
+                }
+
+                $scope.infowindow.setContent("<h3>"+ $scope.marker_info.name + "</h3><p>" + $scope.marker_info.description + "</p>");
+               
+               
+
+                 //OTWIERA INFOWINDOW  
+                  if( $scope.clicked_marker.name != "") {
+                      for (var i = 0; i < $scope.markers.length; i++) {
+                        if ($scope.markers[i].id ==  $scope.clicked_marker.id) {
+                                  $scope.infowindow.close($scope.map_notes, $scope.markers[i]);
+                                  $scope.infowindow.open($scope.map_notes, $scope.markers[i]);
+                        }
+                      }  
+                  }
+
+
+                  
+                $scope.$apply(function() {
+                    $scope.info_box = false;     
+                });
+          });   
+
+
+          google.maps.event.addDomListener(document.getElementById('submit'), 'click', function() {
+              geocodeAddress( $scope.geocoder, $scope.map_notes);
+          });
+                
+
+          google.maps.event.addListener($scope.map_notes, 'rightclick', function(event) {  
+              newMarker(event.latLng);              
+          });
+          
+          google.maps.event.addDomListener(document.getElementById('save'), 'click', function() {
+               // console.log(JSON.stringify($scope.geoJson));
+              google.maps.Data.toGeoJson(function(data){console.log(data)});
+              
+          });
+                
+          google.maps.event.addDomListener(document.getElementById('del'), 'click', function() { 
+           
+             delMarker();
+          });
+
+        function delMarker(marker) {
+
+            if (marker != null) {
+             var del_marker_id = marker.id;
+               marker.setMap(null); 
+            } else {
+               var del_marker_id = $scope.clicked_marker.id;
+                $scope.clicked_marker.setMap(null); 
+            }    
+              
+            $scope.markers = []; 
+                
+            delete $scope.temporary_markers[del_marker_id]; 
+             
+            for(let x of Object.keys($scope.temporary_markers).sort()){
+                    
+                $scope.markers.push($scope.temporary_markers[x]);
+                            
+            }
+            
+            $scope.label_id = 1;
+                  
+            for(var i = 0; i < $scope.markers.length; i++) {
+                var x = $scope.label_id++; 
+                    x = x.toString();
+                    $scope.markers[i].setLabel(x);
+            }
+            
+            $scope.label_id = $scope.label_id -1;
+        }
+
+        function geocodeAddress(geocoder, resultsMap) {
+            var address = document.getElementById('address').value;
+            geocoder.geocode({'address': address}, function(results, status) {
+              if (status === 'OK') {
+                                       
+                $scope.map_notes.setCenter(results[0].geometry.location);
+                 
+                  newMarker(results[0].geometry.location);
+
+              } else {
+                alert('Coś poszło nie tak: ' + status);
+              }
+            });
+        }
+
+        function clearInfoBox() {
+          $scope.$apply(function() {
+                 $scope.marker_info.id = '';
+                 $scope.marker_info.name = '';
+                 $scope.marker_info.description = '';
+                 $scope.info_box = false;
+               });
+        }
+
     });
 
     app.controller("usersCtrl", function ($scope) {
