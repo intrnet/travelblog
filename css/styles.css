@@ -139,3 +139,17 @@ h2 {
         line-height: 30px;
         padding-left: 10px;
       }
+md-fab-speed-dial {
+      position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10000000;
+}
+
+.menu_action_buttons .md-fab {
+ fill: :#64aadc;
+}
+
+md-bottom-sheet {
+  position: fixed;
+}

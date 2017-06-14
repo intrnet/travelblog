@@ -56,11 +56,36 @@
   </div>
  
   <div layout="row" style="height:100%">
+
     <div layout="column" flex="75" hide show-gt-sm ng-cloak class="map_box">
-     <md-button class="md-fab md-fab-bottom-right" aria-label="Dodaj notatkę" ng-click="showAdd($event)">
-        <ng-md-icon icon="add"></ng-md-icon>
-      </md-button>  
+         <div ng-controller="BottomNotesMenuCtrl as menu" layout="column" ng-cloak>
+  
+      <md-fab-speed-dial md-open="menu.isOpen" md-direction="{{menu.selectedDirection}}" ng-class="menu.selectedMode">
+        <md-fab-trigger>
+            <md-button class="md-fab md-accent" aria-label="Dodaj notatkę" ng-class="menu.selectedMode">
+              <ng-md-icon icon="menu"></ng-md-icon>
+            </md-button>  
+        </md-fab-trigger>
+
+        <md-fab-actions class="menu_action_buttons">
+          <md-button aria-label="Dodaj lokalizację" class="md-fab md-hue-2 md-mini" ng-model="disable_edit_location_button" ng-disabled="disable_edit_location_button" ng-click="delMarker()">
+           <ng-md-icon icon="delete"></ng-md-icon>
+          </md-button>
+          <md-button aria-label="Edytuj lokalizację" class="md-fab md-hue-2 md-mini" ng-model="disable_edit_location_button" ng-click="editMarkerModal($event)" ng-disabled="disable_edit_location_button">
+            <ng-md-icon icon="edit_location"></ng-md-icon>
+          </md-button>
+          <md-button aria-label="Dodaj lokalizację" class="md-fab md-primary md-mini" ng-click="addLocationModal($event)">
+           <ng-md-icon icon="add_location"></ng-md-icon>
+          </md-button>
+          
+          
+         
+        </md-fab-actions>
+      </md-fab-speed-dial>
+ 
+</div>
       <md-content layout="column" flex="100" id="map_notes"></md-content>
+
     </div>
 
 
@@ -68,19 +93,8 @@
     <div flex class="md-whiteframe-z2" layout="column">
       <md-content layout="column" layout="column" flex="100">
 
-         <div id="floating-panel">
-      <input id="address" type="textbox" value="Kraków, Radzikowskiego">
-      <input id="submit" type="button" value="Geocode">
-    </div>
- <div id="info_box" ng-show="info_box">
-<input ng-model="marker_info.name" />
-<input ng-model="marker_info.description" />
-<input id="ok" value="ok" type="button" />
-<input id="del" value="del" type="button" />
-<input ng-model="marker_info.id" type="number">
-<br> 
-<input id="save" value="save" type="button" />
-</div>
+ 
+
  
            
                
@@ -88,4 +102,6 @@
          
       </md-content>
   </div>
+
+ 
 </md-content>
