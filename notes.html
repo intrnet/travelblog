@@ -68,13 +68,24 @@
         </md-fab-trigger>
 
         <md-fab-actions class="menu_action_buttons">
-          <md-button aria-label="Dodaj lokalizację" class="md-fab md-hue-2 md-mini" ng-model="disable_edit_location_button" ng-disabled="disable_edit_location_button" ng-click="delMarker()">
+        <md-button aria-label="Usuń wszystko" class="md-fab md-hue-2 md-mini" ng-click="initClearMarkers()" ng-model="delDisabled" ng-disabled="delDisabled">
+           <md-tooltip md-direction="left">Usuń wszystko</md-tooltip>
+           <ng-md-icon icon="clear"></ng-md-icon>
+          </md-button>
+           <md-button aria-label="Zapisz wszystko" class="md-fab md-hue-2 md-mini" ng-click="saveToGeoJson()" ng-model="saveDisabled" ng-disabled="saveDisabled">
+           <md-tooltip md-direction="left">Zapisz w lokalstorage</md-tooltip>
+           <ng-md-icon icon="save"></ng-md-icon>
+          </md-button>
+          <md-button aria-label="Usuń lokalizację" class="md-fab md-hue-2 md-mini" ng-model="disable_edit_location_button" ng-disabled="disable_edit_location_button" ng-click="delMarker()">
+          <md-tooltip md-direction="left">Usuń lokalizację</md-tooltip>
            <ng-md-icon icon="delete"></ng-md-icon>
           </md-button>
           <md-button aria-label="Edytuj lokalizację" class="md-fab md-hue-2 md-mini" ng-model="disable_edit_location_button" ng-click="editMarkerModal($event)" ng-disabled="disable_edit_location_button">
+            <md-tooltip md-direction="left">Edytuj lokalizację</md-tooltip>
             <ng-md-icon icon="edit_location"></ng-md-icon>
           </md-button>
           <md-button aria-label="Dodaj lokalizację" class="md-fab md-primary md-mini" ng-click="addLocationModal($event)">
+           <md-tooltip md-direction="left">Dodaj lokalizację</md-tooltip>
            <ng-md-icon icon="add_location"></ng-md-icon>
           </md-button>
           
@@ -84,7 +95,7 @@
       </md-fab-speed-dial>
  
 </div>
-      <md-content layout="column" flex="100" id="map_notes"></md-content>
+      <md-content layout="column" flex="100" id="map_notes" ></md-content>
 
     </div>
 
@@ -96,7 +107,32 @@
  
 
  
-           
+            <div class="mdl-layout mdl-js-layout mdl-color--grey-100" hide-sm hide-xs>
+                    <main class="mdl-layout__content">
+                        <div class="mdl-grid" data-ng-repeat="marker in markers">
+                            <div class="mdl-card mdl-cell mdl-cell--12-col mdl-shadow--2dp">
+                                 
+                                <div class="mdl-card__title">
+                                    <h1 class="mdl-card__title-text">{{marker.label}}. {{marker.feature.properties.name}}</h1>
+                                </div>
+                                <div class="mdl-card__supporting-text">
+                                     <p ng-bind-html="marker.feature.properties.description"></p>  
+                                </div>
+                                 
+                                      <div class="mdl-card__actions mdl-card--border">
+                                    
+                                                     
+                                                     <button class="mdl-button mdl-button--icon mdl-button--colored" ng-click="clickedMarker(marker); editMarkerModal();">  <ng-md-icon icon="edit_location"></ng-md-icon></button>
+                                                      <button class="mdl-button mdl-button--icon mdl-button--colored" ng-click="delMarker(marker)"> <ng-md-icon icon="delete"></ng-md-icon></button>
+                                                      <button class="mdl-button mdl-button--icon mdl-button--colored" ng-click="reopenInfowindow(marker)"> <ng-md-icon icon="pin_drop"></ng-md-icon></button>
+                    
+                                      </div>         
+
+
+                            </div>
+                        </div>
+                    </main>
+                </div>
                
 
          

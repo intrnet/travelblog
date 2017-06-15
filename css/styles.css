@@ -153,3 +153,5 @@ md-fab-speed-dial {
 md-bottom-sheet {
   position: fixed;
 }
+
+#notes .mdl-card {min-height: auto !important}

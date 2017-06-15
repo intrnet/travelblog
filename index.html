@@ -1,688 +1,807 @@
 ﻿<html lang="en" ng-app="travelBlogApp">
+
 <head>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
-<meta http-equiv="Pragma" content="no-cache"/>
-<meta http-equiv="Expires" content="0"/>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
-  <link rel="stylesheet" href="css/styles.css">
- <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue-light_blue.min.css" /> 
- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue-light_blue.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
+
 <body layout="row" ng-controller="AppCtrl" ng-cloak>
- 
- <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
-      <md-toolbar class="md-tall md-hue-2 tb-toolbar-bg">
-        <span flex></span>
-        <div layout="column" class="md-toolbar-tools-bottom inset tb-toolbar-box">
-          <user-avatar></user-avatar>
-          <h3>Travel Blog</h3>
-          <h4>Pamiętnik podróżnika</h4>
-        </div>
-      </md-toolbar>
-      <md-list>
-        
-      <md-list-item ng-repeat="item in menu">
-       <a ng-href="{{item.link}}" class="tb-sidebar-link" ng-click="closeSidebar()">  
-          <md-item-content md-ink-ripple layout="row" layout-align="start center">
-            <div class="inset">
-              <ng-md-icon icon="{{item.icon}}"></ng-md-icon>
+
+    <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+        <md-toolbar class="md-tall md-hue-2 tb-toolbar-bg">
+            <span flex></span>
+            <div layout="column" class="md-toolbar-tools-bottom inset tb-toolbar-box">
+                <user-avatar></user-avatar>
+                <h3>Travel Blog</h3>
+                <h4>Pamiętnik podróżnika</h4>
             </div>
-            <div class="inset">{{item.title}}
-            </div>
-          </md-item-content>
-        </a>
-      </md-list-item>
-      <md-divider></md-divider>
-      <md-subheader>Tymczasowe</md-subheader>
-      <md-list-item ng-repeat="item in temp">
-        <a ng-href="{{item.link}}" class="tb-sidebar-link" ng-click="closeSidebar()">
-          <md-item-content md-ink-ripple layout="row" layout-align="start center">
-            <div class="inset">
-              <ng-md-icon icon="{{item.icon}}"></ng-md-icon>
-            </div>
-            <div class="inset">{{item.title}}
-            </div>
-          </md-item-content>
-        </a>
-      </md-list-item>
-    </md-list>
-  </md-sidenav>
-  
-  <md-content layout-fill  layout="column"  ng-view></md-content>
-        
-  <script type="text/javascript" src="https://klaudiusz.eu/wordpress/wp-content/themes/twentysixteen/js/jquery-2.1.1.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-sanitize.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
-  <script src="http://cdn.jsdelivr.net/angular-material-icons/0.7.0/angular-material-icons.min.js"></script> 
-  <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkYLhXi73VHa5nABuDwHOE8EBEA8IDnRg"> </script>
-  <script type="text/javascript">    
-    var app = angular.module("travelBlogApp", ["ngRoute", "ngMaterial", "ngSanitize", "ngMdIcons"]);
-    
-    app.config(function($routeProvider) {
-        $routeProvider
-        .when("/", {
-            templateUrl : "places.html" 
-        })
-        .when("/places", {
-            templateUrl : "places.html" 
-        })
-        .when("/place/:id", {
-            templateUrl : "place.html",
-            controller : "placeCtrl"
-        })
-        .when("/contact", {
-            templateUrl : "contact.html" 
-        })
-        .when("/notes", {
-            templateUrl : "notes.html" 
-        })
-        .when("/users", {
-            templateUrl : "users.html" 
-        }); 
-    });
-  
-    app.controller('AppCtrl', ['$scope', '$mdBottomSheet','$mdSidenav', '$mdDialog', function($scope, $mdBottomSheet, $mdSidenav, $mdDialog){
-      $scope.toggleSidenav = function(menuId) {
-        $mdSidenav(menuId).toggle();
-      };
+        </md-toolbar>
+        <md-list>
 
-      $scope.closeSidebar = function () {
-            $mdSidenav('left').close();
+            <md-list-item ng-repeat="item in menu">
+                <a ng-href="{{item.link}}" class="tb-sidebar-link" ng-click="closeSidebar()">
+                    <md-item-content md-ink-ripple layout="row" layout-align="start center">
+                        <div class="inset">
+                            <ng-md-icon icon="{{item.icon}}"></ng-md-icon>
+                        </div>
+                        <div class="inset">{{item.title}}
+                        </div>
+                    </md-item-content>
+                </a>
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-subheader>Tymczasowe</md-subheader>
+            <md-list-item ng-repeat="item in temp">
+                <a ng-href="{{item.link}}" class="tb-sidebar-link" ng-click="closeSidebar()">
+                    <md-item-content md-ink-ripple layout="row" layout-align="start center">
+                        <div class="inset">
+                            <ng-md-icon icon="{{item.icon}}"></ng-md-icon>
+                        </div>
+                        <div class="inset">{{item.title}}
+                        </div>
+                    </md-item-content>
+                </a>
+            </md-list-item>
+        </md-list>
+    </md-sidenav>
 
-        };
-      $scope.menu = [
-        {
-          link : '#places',
-          title: 'Miejsca',
-          icon: 'place'
-        },
-        {
-          link : '#users',
-          title: 'Osoby',
-          icon: 'group'
-        },
-        {
-          link : '#contact',
-          title: 'Kontakt',
-          icon: 'email'
-        }
-      ];
-      $scope.temp = [
-        {
-          link : '#notes',
-          title: 'Notatki',
-          icon: 'note'
-        } 
-      ];
-      
-   
-      
-      
+    <md-content layout-fill layout="column" ng-view></md-content>
 
-    }]);
+    <script type="text/javascript" src="https://klaudiusz.eu/wordpress/wp-content/themes/twentysixteen/js/jquery-2.1.1.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-sanitize.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+    <script src="http://cdn.jsdelivr.net/angular-material-icons/0.7.0/angular-material-icons.min.js"></script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkYLhXi73VHa5nABuDwHOE8EBEA8IDnRg"></script>
+<script type="text/javascript">    
+ var app = angular.module("travelBlogApp", ["ngRoute", "ngMaterial", "ngSanitize", "ngMdIcons"]);
 
-    app.controller("placesCtrl", ["$scope", "$http", "$mdBottomSheet", "$mdSidenav", "$mdDialog", function($scope, $http, $mdBottomSheet, $mdSidenav, $mdDialog){
- 
-      $http.get('http://klaudiusz.eu/wordpress/api/get_recent_posts/').success(function(data) {
-               
-              }).then(function successCallback(response) {
-                      
-                      $scope.places = response.data.posts;
-                      
-                     
-                      var mapOptions = {
-                            zoom: 6,
-                            center: new google.maps.LatLng(51.919438, 19.145136),
-                            mapTypeId: google.maps.MapTypeId.TERRAIN
-                        }
+ app.config(function($routeProvider) {
+     $routeProvider
+         .when("/", {
+             templateUrl: "places.html"
+         })
+         .when("/places", {
+             templateUrl: "places.html"
+         })
+         .when("/place/:id", {
+             templateUrl: "place.html",
+             controller: "placeCtrl"
+         })
+         .when("/contact", {
+             templateUrl: "contact.html"
+         })
+         .when("/notes", {
+             templateUrl: "notes.html"
+         })
+         .when("/users", {
+             templateUrl: "users.html"
+         });
+ });
 
-                        $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+ app.controller('AppCtrl', ['$scope', '$mdBottomSheet', '$mdSidenav', '$mdDialog', function($scope, $mdBottomSheet, $mdSidenav, $mdDialog) {
+     $scope.toggleSidenav = function(menuId) {
+         $mdSidenav(menuId).toggle();
+     };
 
-                        $scope.markers = [];
-                        
-                        var infoWindow = new google.maps.InfoWindow();
-                        
-                        var createMarker = function (info){
-                         
-                            var marker = new google.maps.Marker({
-                                map: $scope.map,
-                                position: new google.maps.LatLng(info.custom_fields.lat[0], info.custom_fields.lng[0]),
-                                title: info.title,
-                                thumbnail: info.thumbnail_images.tb_size.url,
-                                id: info.id,
-                                date: info.date,
-                                excerpt: info.excerpt
-                            });
+     $scope.closeSidebar = function() {
+         $mdSidenav('left').close();
 
-                            marker.content = '<div class="infoWindowContent"><a ng-href="#place/'+info.id+'">zobacz</a></div>';
-                            
-                            google.maps.event.addListener(marker, 'click', function(){
-                                infoWindow.setContent('<h2>' + marker.title + '</h2>' + marker.content);
-                                infoWindow.open($scope.map, marker);
-                            });
+     };
+     $scope.menu = [{
+         link: '#places',
+         title: 'Miejsca',
+         icon: 'place'
+     }, {
+         link: '#users',
+         title: 'Osoby',
+         icon: 'group'
+     }, {
+         link: '#contact',
+         title: 'Kontakt',
+         icon: 'email'
+     }];
+     $scope.temp = [{
+         link: '#notes',
+         title: 'Notatki',
+         icon: 'note'
+     }];
 
-                           
-                            $scope.markers.push(marker);
-                            
-                        }  
-                        
-                        for (i = 0; i <  response.data.posts.length; i++){
-                            createMarker(response.data.posts[i]);
-                                                }
+ }]);
 
-                        $scope.openInfoWindow = function(e, selectedMarker){
-                   
-                            e.preventDefault();
-                            google.maps.event.trigger(selectedMarker, 'click');
-                        }
- 
-              }, function errorCallback(response) {
-                    console.log('błąd pobierania danych');
-              });
+ app.controller("placesCtrl", ["$scope", "$http", "$mdBottomSheet", "$mdSidenav", "$mdDialog", function($scope, $http, $mdBottomSheet, $mdSidenav, $mdDialog) {
 
+     $http.get('http://klaudiusz.eu/wordpress/api/get_recent_posts/').success(function(data) {
 
-              
-    }]);
- 
-   
- 
-    app.controller("placeCtrl", function ($scope, $http, $routeParams ) {
-        $http.get('https://klaudiusz.eu/wordpress/wp-json/wp/v2/posts/' + $routeParams.id).success(function(data) {
-          $scope.place = data;
-        });
-    });
-    
-    app.controller("contactCtrl", function ($scope) {
-        $scope.msg = "Strona kontaktowa";
-    });
+     }).then(function successCallback(response) {
 
-    app.controller("notesCtrl", function ($scope, $mdDialog, $mdBottomSheet, $mdToast) {
-        $scope.info_box = false;
-        $scope.disable_edit_location_button = true;
-              
-  
-        var marker_red = 'http://klaudiusz.eu/travelblog/images/marker-r.png';
-        var marker_white = 'http://klaudiusz.eu/travelblog/images/marker.png';
-        var marker_green = 'http://klaudiusz.eu/travelblog/images/marker-g.png';
-        $scope.marker_green = 'http://klaudiusz.eu/travelblog/images/marker-g.png';
-        
-        $scope.msg = "Notatki";
-        $scope.startedMarkerPosition;
-        $scope.label_id = 0;
-        $scope.markers = [];
-        $scope.temporary_markers = {};
-        $scope.clicked_marker;
-        $scope.geocoder = new google.maps.Geocoder();
-        $scope.map_notes = new google.maps.Map(document.getElementById('map_notes'), {
-                                zoom: 6,
-                                center: {lat: 51.919438, lng: 19.145136 },
-                                mapTypeControl: true,
-                                mapTypeControlOptions: {
-                                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                                    position: google.maps.ControlPosition.TOP_CENTER
-                                },
-                                zoomControl: true,
-                                zoomControlOptions: {
-                                    position: google.maps.ControlPosition.RIGHT_CENTER
-                                },
-                                scaleControl: true,
-                                streetViewControl: true,
-                                streetViewControlOptions: {
-                                    position: google.maps.ControlPosition.LEFT_TOP
-                                },
-                                fullscreenControl: true
-        });
+         $scope.places = response.data.posts;
 
-        $scope.infowindow = new google.maps.InfoWindow({
-                content: null
+         var mapOptions = {
+             zoom: 6,
+             center: new google.maps.LatLng(51.919438, 19.145136),
+             mapTypeId: google.maps.MapTypeId.TERRAIN
+         }
+
+         $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+         $scope.markers = [];
+
+         var infoWindow = new google.maps.InfoWindow();
+
+         var createMarker = function(info) {
+
+             var marker = new google.maps.Marker({
+                 map: $scope.map,
+                 position: new google.maps.LatLng(info.custom_fields.lat[0], info.custom_fields.lng[0]),
+                 title: info.title,
+                 thumbnail: info.thumbnail_images.tb_size.url,
+                 id: info.id,
+                 date: info.date,
+                 excerpt: info.excerpt,
+                 icon: 'http://klaudiusz.eu/travelblog/images/marker.png'
              });
 
-        $scope.geoJson = {
-                          "type": "FeatureCollection",
-                          "features": []
-                          };
+             marker.content = '<div class="infoWindowContent"><a ng-href="#place/' + info.id + '">zobacz</a></div>';
 
-        $scope.marker_info = {
-                          "id": "",
-                          "name": "",
-                          "description": ""
-                           };
-         
-        function newMarker(position) {
-           $scope.disable_edit_location_button = true;
-            clearInfoBox();
-            if ($scope.infowindow) { $scope.infowindow.close(); };
-            //var token = Math.random().toString(36).substr(2, 5) + new Date().getTime();
-            var token = new Date().getTime() + Math.random().toString(36).substr(2, 5);
-            $scope.label_id++; 
-       
-            var label_id = $scope.label_id.toString(); 
-            var marker = new google.maps.Marker({
-                                                  position: position, 
-                                                  map: $scope.map_notes, 
-                                                  draggable: true, 
-                                                  id: token, 
-                                                  feature: {
-                                                        "type": "Feature",
-                                                        "geometry": {
-                                                                      "type": "Point",
-                                                                      "coordinates": [position.lat(), position.lng()]
-                                                              },
-                                                        "properties": {
-                                                                "id": token,
-                                                                "name": $scope.marker_info.name,
-                                                                "description": $scope.marker_info.description
-                                                                }
-                                                  }, 
-                                                  label: label_id,
-                                                  icon: marker_green
-                                                });
-         
-            //ZMIANA KOLORU MARKERA
-            if($scope.markers.length != 0){
-                for (var i = 0; i < $scope.markers.length; i++) {                  
-                     $scope.markers[i].setIcon(marker_white)
-                }
+             google.maps.event.addListener(marker, 'click', function() {
+                 infoWindow.setContent('<h2>' + marker.title + '</h2>' + marker.content);
+                 infoWindow.open($scope.map, marker);
+             });
+
+             $scope.markers.push(marker);
+
+         }
+
+         for (i = 0; i < response.data.posts.length; i++) {
+             createMarker(response.data.posts[i]);
+         }
+
+         $scope.openInfoWindow = function(e, selectedMarker) {
+
+             e.preventDefault();
+             google.maps.event.trigger(selectedMarker, 'click');
+         }
+
+     }, function errorCallback(response) {
+         console.log('błąd pobierania danych');
+     });
+
+ }]);
+
+ app.controller("placeCtrl", function($scope, $http, $routeParams) {
+     $http.get('https://klaudiusz.eu/wordpress/wp-json/wp/v2/posts/' + $routeParams.id).success(function(data) {
+         $scope.place = data;
+     });
+ });
+
+ app.controller("contactCtrl", function($scope) {
+     $scope.msg = "Strona kontaktowa";
+ });
+
+ app.controller("notesCtrl", function($scope, $mdDialog, $mdBottomSheet, $mdToast, $timeout) {
+  window.setTimeout(function() {
+
+     $scope.info_box = false;
+     $scope.disable_edit_location_button = true;
+
+     var marker_red = 'http://klaudiusz.eu/travelblog/images/marker-r.png';
+     var marker_white = 'http://klaudiusz.eu/travelblog/images/marker.png';
+     var marker_green = 'http://klaudiusz.eu/travelblog/images/marker-g.png';
+     $scope.marker_green = 'http://klaudiusz.eu/travelblog/images/marker-g.png';
+
+     $scope.msg = "Notatki";
+     $scope.startedMarkerPosition;
+     $scope.label_id = 0;
+     $scope.markers = [];
+     $scope.temporary_markers = {};
+     $scope.clicked_marker;
+     $scope.geocoder = new google.maps.Geocoder();
+      
+     $scope.map_notes = new google.maps.Map(document.getElementById('map_notes'), {
+         zoom: 6,
+         center: {
+             lat: 51.919438,
+             lng: 19.145136
+         },
+         mapTypeControl: true,
+         mapTypeControlOptions: {
+             style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+             position: google.maps.ControlPosition.TOP_CENTER
+         },
+         zoomControl: true,
+         zoomControlOptions: {
+             position: google.maps.ControlPosition.RIGHT_CENTER
+         },
+         scaleControl: true,
+         streetViewControl: true,
+         streetViewControlOptions: {
+             position: google.maps.ControlPosition.LEFT_TOP
+         },
+         fullscreenControl: true
+     });
+ 
+ 
+     $scope.infowindow = new google.maps.InfoWindow({
+         content: null
+     });
+
+     $scope.geoJson = {
+         "type": "FeatureCollection",
+         "features": []
+     };
+
+     $scope.marker_info = {
+         "id": "",
+         "name": "",
+         "description": ""
+     };
+
+     $scope.newMarker = function(position, meta) {
+             $scope.disable_edit_location_button = true;
+             $scope.marker_info.name = "";
+             $scope.marker_info.description = "";
+             if ($scope.infowindow) {
+                 $scope.infowindow.close();
              };
 
-            //NOWY MARKER - PRZEŁADOWANIE TABLICY Z MARKERAMI 
-            $scope.markers = [];
-            $scope.temporary_markers[token] = marker;
-          
-         
-            for(let x of Object.keys($scope.temporary_markers).sort()){
-                             
-                    $scope.markers.push($scope.temporary_markers[x]);       
-                }
-              
-                  
-            //KLIK MARKERA       
-            marker.addListener('click', function() {
- 
-                  $scope.marker_info.name = marker.feature.properties.name;
-            
-                  $scope.marker_info.description = marker.feature.properties.description;
+             if (meta !== null) {
+                 $scope.label_id++;
+                 var token = new Date().getTime() + Math.random().toString(36).substr(2, 5);
+                 var marker_name = $scope.marker_info.name;
+                 var marker_description = $scope.marker_info.description;
+                 var label_id = $scope.label_id.toString();
+             } else {
+                 var token = meta.id;
+                 var marker_name = meta.properties.name;
+                 var marker_description = meta.properties.description;
+                 var label_id = meta.properties.label;
+             }
+             var marker = new google.maps.Marker({
+                 position: position,
+                 map: $scope.map_notes,
+                 draggable: true,
+                 id: token,
+                 feature: {
+                     "type": "Feature",
+                     "geometry": {
+                         "type": "Point",
+                         "coordinates": [position.lat(), position.lng()],
+                         "position": position
+                     },
+                     "properties": {
+                         "id": token,
+                         "name": marker_name,
+                         "description": marker_description,
+                         "label": label_id
+                     }
+                 },
+                 label: label_id,
+                 icon: marker_green
+             });
+
+             //ZMIANA KOLORU MARKERA
+             if ($scope.markers.length != 0) {
+                 for (var i = 0; i < $scope.markers.length; i++) {
+                     $scope.markers[i].setIcon(marker_white)
+                 }
+             };
+
+             //NOWY MARKER - PRZEŁADOWANIE TABLICY Z MARKERAMI 
+             $scope.markers = [];
+             $scope.temporary_markers[token] = marker;
+
+             for (let x of Object.keys($scope.temporary_markers).sort()) {
+
+                 $scope.markers.push($scope.temporary_markers[x]);
+             }
+
+             $scope.markerService(marker);
+
+         } // KONIEC NEWMAKER
+
+     google.maps.event.addListener($scope.map_notes, 'click', function(event) {
+         $scope.clicked_marker = null;
+         $scope.disable_edit_location_button = true;
+         if ($scope.markers.length != 0) {
+             for (var i = 0; i < $scope.markers.length; i++) {
+                 $scope.markers[i].setIcon(marker_white)
+             }
+         };
+         if ($scope.infowindow) {
+             $scope.infowindow.close();
+         };
+     });
+
+     google.maps.event.addListener($scope.map_notes, 'rightclick', function(event) {
+         $scope.clicked_marker = null;
+         $scope.disable_edit_location_button = true;
+         $scope.newMarker(event.latLng);
+         $scope.$apply();
+     });
+
+     $scope.markerService = function(marker) {
+         //KLIK MARKERA       
+         marker.addListener('click', function() {
+             $scope.clickedMarker(marker);
              
-                  if ($scope.infowindow) { $scope.infowindow.close(); }
-                  $scope.clicked_marker = marker;
-                
-                  $scope.infowindow.setContent("<h3>"+ marker.feature.properties.name + "</h3><p>" + marker.feature.properties.description + "</p>"
-                                                     + "<strong>lat</strong>: " + $scope.clicked_marker.feature.geometry.coordinates[0]+
-                                                       "<br><strong>lng</strong>: " + $scope.clicked_marker.feature.geometry.coordinates[1]);
-                   
-                  //OTWIERA INFOWINDOW  
-                  if(marker.feature.properties.name != "") {
-                      for (var i = 0; i < $scope.markers.length; i++) {
-                        if ($scope.markers[i].id == marker.id) {
-                                  $scope.infowindow.open($scope.map_notes, $scope.markers[i]);
-                        }
-                      }  
-                  }
+         });
+
+         //RIGHTCLICK USUNIECIE MARKERA 
+         marker.addListener('rightclick', function() {
+             $scope.delMarker(marker);
+         });
+
+         //DOUBLECLICK EDYCJA MARKERA 
+         marker.addListener('dblclick', function() {
+             $scope.editMarkerModal();
+         });
+         marker.addListener('dragstart', function() {
+             $scope.startedMarkerPosition = marker.getPosition();
+         });
+
+         // PRZESUNIĘCIE MARKERA                   
+         marker.addListener('dragend', function() {
+
+             if ($scope.clicked_marker) {
+                 if (marker.id == $scope.clicked_marker.id) {
+                     $scope.clicked_marker.feature.geometry.coordinates[0] = marker.position.lat();
+                     $scope.clicked_marker.feature.geometry.coordinates[1] = marker.position.lng();
+                     $scope.clicked_marker.feature.geometry.position = marker.position;
                     
-                  //ZMIANA KOLORU MARKERA
-                  if($scope.markers.length != 0){
-                      for (var i = 0; i < $scope.markers.length; i++) {                  
-                           $scope.markers[i].setIcon(marker_white)
-                      }
-                  }; 
-                  marker.setIcon(marker_red);    
+                     $scope.markers = [];
+                     var upd_marker_id = $scope.clicked_marker.id;
 
-                  $scope.disable_edit_location_button = false;
-                
-            });
+                     delete $scope.temporary_markers[upd_marker_id];
 
-            //RIGHTCLICK USUNIECIE MARKERA 
-            marker.addListener('rightclick', function() {
-                 $scope.delMarker(marker);
-            });
+                     $scope.temporary_markers[upd_marker_id] = $scope.clicked_marker;
 
-            //DOUBLECLICK EDYCJA MARKERA 
-            marker.addListener('dblclick', function() {
-                 $scope.editMarkerModal();
-            });
-            marker.addListener('dragstart', function() { $scope.startedMarkerPosition = marker.getPosition();});
-            // PRZESUNIĘCIE MARKERA                   
-            marker.addListener('dragend', function() {
-               
-                if($scope.clicked_marker){
-                   if(marker.id == $scope.clicked_marker.id){
-                       $scope.clicked_marker.feature.geometry.coordinates[0] = marker.position.lat();
-                       $scope.clicked_marker.feature.geometry.coordinates[1] = marker.position.lng();
-                         
-                       $scope.markers = [];
-                       var upd_marker_id = $scope.clicked_marker.id;
-                   
-                       delete $scope.temporary_markers[ upd_marker_id ];
-               
-                       $scope.temporary_markers[ upd_marker_id] = $scope.clicked_marker;
-                    
-                       for(let x of Object.keys($scope.temporary_markers).sort()){
+                     for (let x of Object.keys($scope.temporary_markers).sort()) {
 
-                          $scope.markers.push($scope.temporary_markers[x]);
-                       
-                        }
+                         $scope.markers.push($scope.temporary_markers[x]);
 
-                         $scope.reopenInfowindow(marker);
+                     }
 
-                    } else {
-                         
-                         marker.setPosition($scope.startedMarkerPosition);
-                         $scope.showListBottomSheet('Musisz zaznaczyć marker!');   
-                          $scope.reopenInfowindow(marker);
-                           $scope.clicked_marker = null;
-                    }
-                } else {
-                
-                  marker.setPosition($scope.startedMarkerPosition);
-                  $scope.showListBottomSheet('Musisz zaznaczyć marker!');   
-                  $scope.reopenInfowindow(marker);
-                   $scope.clicked_marker = null;
-                }
+                     $scope.reopenInfowindow(marker);
 
+                 } else {
 
+                     marker.setPosition($scope.startedMarkerPosition);
+                     $scope.showListBottomSheet('Musisz zaznaczyć marker!');
+                     $scope.reopenInfowindow(marker);
+                     $scope.clicked_marker = null;
+                 }
+             } else {
 
-            });     
+                 marker.setPosition($scope.startedMarkerPosition);
+                 $scope.showListBottomSheet('Musisz zaznaczyć marker!');
+                 $scope.reopenInfowindow(marker);
+                 $scope.clicked_marker = null;
+             }
+         });
 
+         $scope.saveDelBtnStatus();
+     }
 
-        }  // KONIEC NEWMAKER
+     $scope.saveMarkerInfo = function() {
+         $scope.markers = [];
+         var upd_marker_id = $scope.clicked_marker.id;
 
-        // UPDATE MARKERA
+         delete $scope.temporary_markers[upd_marker_id];
 
-          google.maps.event.addListener($scope.map_notes, 'click', function(event) {  
-                          $scope.clicked_marker = null;
-                          $scope.disable_edit_location_button = true;
-                          if($scope.markers.length != 0){
-                          for (var i = 0; i < $scope.markers.length; i++) {                  
-                               $scope.markers[i].setIcon(marker_white)
-                              }
-                          };    
-                          if ($scope.infowindow) { $scope.infowindow.close(); };    
-          });          
+         $scope.clicked_marker.feature.properties.name = $scope.marker_info.name;
+         $scope.clicked_marker.feature.properties.description = $scope.marker_info.description;
+         $scope.temporary_markers[upd_marker_id] = $scope.clicked_marker;
 
-          google.maps.event.addListener($scope.map_notes, 'rightclick', function(event) {  
-                          $scope.clicked_marker = null;
-                          $scope.disable_edit_location_button = true;
-                          newMarker(event.latLng);              
-          });
-          
-          // google.maps.event.addDomListener(document.getElementById('save'), 'click', function() {
-          //      // console.log(JSON.stringify($scope.geoJson));
-          //     google.maps.Data.toGeoJson(function(data){console.log(data)});
-              
-          // });
-                
-          // google.maps.event.addDomListener(document.getElementById('del'), 'click', function() { 
-           
-          //    delMarker();
-          // });
+         for (let x of Object.keys($scope.temporary_markers).sort()) {
 
-        function saveMarkerInfo() {
-                $scope.markers = [];
-                var upd_marker_id = $scope.clicked_marker.id;
-               
-                delete $scope.temporary_markers[ upd_marker_id ];
+             $scope.markers.push($scope.temporary_markers[x]);
 
-                $scope.clicked_marker.feature.properties.name = $scope.marker_info.name;
-                $scope.clicked_marker.feature.properties.description = $scope.marker_info.description;            
-                $scope.temporary_markers[ upd_marker_id] = $scope.clicked_marker;
+         }
+         $scope.infowindow.setContent("<h3>" + $scope.marker_info.name + "</h3><p>" + $scope.marker_info.description + "</p><br>" +
+             "<strong>lat</strong>: " + $scope.clicked_marker.feature.geometry.coordinates[0] +
+             "<br><strong>lng</strong>: " + $scope.clicked_marker.feature.geometry.coordinates[1]
+         );
 
-                
-                for(let x of Object.keys($scope.temporary_markers).sort()){
-                 
-                 
-                    $scope.markers.push($scope.temporary_markers[x]);
-                   
-                } 
-                $scope.infowindow.setContent("<h3>"+ $scope.marker_info.name + "</h3><p>" + $scope.marker_info.description + "</p><br>"+
-                                                    "<strong>lat</strong>: " + $scope.clicked_marker.feature.geometry.coordinates[0]+
-                                                    "<br><strong>lng</strong>: " + $scope.clicked_marker.feature.geometry.coordinates[1]
-                                                    );
-               
-               
+         //OTWIERA INFOWINDOW  
+         if ($scope.clicked_marker.name != "") {
+             for (var i = 0; i < $scope.markers.length; i++) {
+                 if ($scope.markers[i].id == $scope.clicked_marker.id) {
+                     $scope.infowindow.close($scope.map_notes, $scope.markers[i]);
+                     $scope.infowindow.open($scope.map_notes, $scope.markers[i]);
+                 }
+             }
+         }
+     }
 
-                 //OTWIERA INFOWINDOW  
-                  if( $scope.clicked_marker.name != "") {
-                      for (var i = 0; i < $scope.markers.length; i++) {
-                        if ($scope.markers[i].id ==  $scope.clicked_marker.id) {
-                                  $scope.infowindow.close($scope.map_notes, $scope.markers[i]);
-                                  $scope.infowindow.open($scope.map_notes, $scope.markers[i]);
-                        }
-                      }  
-                  }
+     $scope.clickedMarker = function(marker) {
+         $scope.marker_info.name = marker.feature.properties.name;
+         $scope.marker_info.description = marker.feature.properties.description;
 
+         if ($scope.infowindow) {
+             $scope.infowindow.close();
+         }
+         $scope.clicked_marker = marker;
 
-              
-        }
+         $scope.infowindow.setContent("<h3>" + marker.feature.properties.name + "</h3><p>" + marker.feature.properties.description + "</p>" + "<strong>lat</strong>: " + $scope.clicked_marker.feature.geometry.coordinates[0] +
+             "<br><strong>lng</strong>: " + $scope.clicked_marker.feature.geometry.coordinates[1]);
 
-        $scope.delMarker = function (marker, ev) {
-           var confirm = $mdDialog.confirm()
-          .title('Czy na pewno chcesz usunąć to miejsce?')
-          .textContent('Marker zostanie usunięty z mapy i pamięci lokalnej.')
-          .targetEvent(ev)
-          .ok('Tak usuń!')
-          .cancel('Nie usuwaj');
+         //OTWIERA INFOWINDOW  
+         if (marker.feature.properties.name != "") {
+             for (var i = 0; i < $scope.markers.length; i++) {
+                 if ($scope.markers[i].id == marker.id) {
+                     $scope.infowindow.open($scope.map_notes, $scope.markers[i]);
+                 }
+             }
+         }
 
-          $mdDialog.show(confirm).then(function() {
+         //ZMIANA KOLORU MARKERA
+         if ($scope.markers.length != 0) {
+             for (var i = 0; i < $scope.markers.length; i++) {
+                 $scope.markers[i].setIcon(marker_white)
+             }
+         };
+         marker.setIcon(marker_red);
+
+         $scope.disable_edit_location_button = false;
+     }
+
+     $scope.delMarker = function(marker) {
+         var confirm = $mdDialog.confirm()
+             .title('Czy na pewno chcesz usunąć to miejsce?')
+             .textContent('Marker zostanie usunięty z mapy i pamięci lokalnej.')
+             .ok('Tak usuń!')
+             .cancel('Nie usuwaj');
+
+         $mdDialog.show(confirm).then(function() {
 
              if (marker != null) {
-             var del_marker_id = marker.id;
-               marker.setMap(null); 
-            } else {
-               var del_marker_id = $scope.clicked_marker.id;
-                $scope.clicked_marker.setMap(null); 
-            }    
-              
-            $scope.markers = []; 
-                
-            delete $scope.temporary_markers[del_marker_id]; 
-             
-            for(let x of Object.keys($scope.temporary_markers).sort()){
-                    
-                $scope.markers.push($scope.temporary_markers[x]);
-                            
-            }
-            
-            $scope.label_id = 1;
-                  
-            for(var i = 0; i < $scope.markers.length; i++) {
-                var x = $scope.label_id++; 
-                    x = x.toString();
-                    $scope.markers[i].setLabel(x);
-            }
-            
-            $scope.label_id = $scope.label_id -1;
-            $scope.disable_edit_location_button = true;
+                 var del_marker_id = marker.id;
+                 marker.setMap(null);
+             } else {
+                 var del_marker_id = $scope.clicked_marker.id;
+                 $scope.clicked_marker.setMap(null);
+             }
+
+             $scope.markers = [];
+
+             delete $scope.temporary_markers[del_marker_id];
+
+             for (let x of Object.keys($scope.temporary_markers).sort()) {
+
+                 $scope.markers.push($scope.temporary_markers[x]);
+
+             }
+
+             $scope.label_id = 1;
+
+             for (var i = 0; i < $scope.markers.length; i++) {
+                 var x = $scope.label_id++;
+                 x = x.toString();
+                 $scope.markers[i].setLabel(x);
+             }
+
+             $scope.label_id = $scope.label_id - 1;
+             $scope.disable_edit_location_button = true;
              $scope.clicked_marker = null;
 
-               $scope.showListBottomSheet('Marker został usunięty');
-           
-          }, function() {
-           
-          });
-        }
+             $scope.showListBottomSheet('Marker został usunięty');
 
-       $scope.reopenInfowindow = function(marker) {
-        if ($scope.infowindow) { $scope.infowindow.close(); }
-                  $scope.clicked_marker = marker;
-                
-                  $scope.infowindow.setContent("<h3>"+ marker.feature.properties.name + "</h3><p>" + marker.feature.properties.description + "</p>"
-                                                     + "<strong>lat</strong>: " + marker.feature.geometry.coordinates[0]+
-                                                       "<br><strong>lng</strong>: " + marker.feature.geometry.coordinates[1]);
-                   
-                  //OTWIERA INFOWINDOW  
-                  if(marker.feature.properties.name != "") {
-                      for (var i = 0; i < $scope.markers.length; i++) {
-                        if ($scope.markers[i].id == marker.id) {
-                                  $scope.infowindow.open($scope.map_notes, $scope.markers[i]);
-                        }
-                      }  
-                  }
-       }
+         }, function() {
 
-        function geocodeAddress(geocoder, resultsMap) {
-            var address = $scope.geocoder_result;
-            geocoder.geocode({'address': address}, function(results, status) {
-              if (status === 'OK') {
-                                       
-                $scope.map_notes.setCenter(results[0].geometry.location);
-                 
-                  newMarker(results[0].geometry.location);
+         });
+     }
 
-              } else {
-                alert('Coś poszło nie tak: ' + status);
-              }
-            });
-        }
+     $scope.reopenInfowindow = function(marker) {
+         if ($scope.infowindow) {
+             $scope.infowindow.close();
+         }
+         $scope.clicked_marker = marker;
 
-        function clearInfoBox() {
-          $scope.$apply(function() {
-                 $scope.marker_info.id = '';
-                 $scope.marker_info.name = '';
-                 $scope.marker_info.description = '';
-                 $scope.info_box = false;
-               });
-        }
+         $scope.infowindow.setContent("<h3>" + marker.feature.properties.name + "</h3><p>" + marker.feature.properties.description + "</p>" + "<strong>lat</strong>: " + marker.feature.geometry.coordinates[0] +
+             "<br><strong>lng</strong>: " + marker.feature.geometry.coordinates[1]);
 
-        $scope.editMarkerModal = function(event) {
-           
-                    $scope.marker_info.name =  $scope.clicked_marker.feature.properties.name;
-   
-                    $scope.marker_info.description =  $scope.clicked_marker.feature.properties.description
-            
-            $mdDialog.show({
-             
-              targetEvent: event,
-              scope: $scope,
-              preserveScope: true,
-              template: '<md-dialog>' +
-                        '  <md-dialog-content class="padding">' +
-                        '   <md-content layout-padding>' +
-                        '   <form name="projectForm">' +
-                        '   <h5>Wprowadź informacje o lokalizacji marekra</h5>' +
-                        '      <md-input-container class="md-icon-float md-block">' +
-                        '       <label>Nazwa</label>' +
-                        '           <input ng-model="marker_info.name" type="text" required md-no-asterisk>' +
-                        '           <div ng-messages="marker_info.name.$error">' +
-                        '               <div ng-message="required">To pole jest wymagane.</div>' +
-                        '            </div>' +
-                        '     </md-input-container>' +
-                        '      <md-input-container class="md-icon-float md-block">' +
-                        '       <label>Opis</label>' +
-                        '           <textarea ng-model="marker_info.description" rows="1"></textarea>' +
-                        '     </md-input-container>' +
-                        '     </md-content>' +
-                        '<md-dialog-actions><md-button class="md-primary md-button ng-scope md-default-theme md-ink-ripple" ng-click="hide()" type="submit">Zapisz</md-button><md-button class="md-primary md-button ng-scope md-default-theme md-ink-ripple" ng-click="cancel()">Anuluj</md-button></md-dialog-actions>' +
-                        '</form>' +
-                        '</md-dialog-content></md-dialog>',
-              controller: function($scope, $mdDialog){
-             
-                 $scope.closeDialog = function(){$mdDialog.hide();};
-                
-                $scope.hide = function() {
-                  if($scope.marker_info.name != '') {
-                   $mdDialog.hide();
-                   saveMarkerInfo();
+         //OTWIERA INFOWINDOW  
+         if (marker.feature.properties.name != "") {
+             for (var i = 0; i < $scope.markers.length; i++) {
+                 if ($scope.markers[i].id == marker.id) {
+                     $scope.infowindow.open($scope.map_notes, $scope.markers[i]);
                  }
-                  
-                };
-                $scope.cancel = function() {
-                  $mdDialog.cancel();
-                };
-                $scope.answer = function() {
-                  
-                  $mdDialog.hide();
+             }
+         }
+     }
+
+     function geocodeAddress(geocoder, resultsMap) {
+         var address = $scope.geocoder_result;
+         geocoder.geocode({
+             'address': address
+         }, function(results, status) {
+             if (status === 'OK') {
+
+                 $scope.map_notes.setCenter(results[0].geometry.location);
+
+                 $scope.newMarker(results[0].geometry.location);
+                 $scope.$apply();
+             } else {
+                 $scope.showListBottomSheet('Nie podałeś adresu!');
+             }
+         });
+     }
+
+     $scope.saveToGeoJson = function() {
+         $scope.geoJson.features = [];
+         for (var i = 0; i < $scope.markers.length; i++) {
+             $scope.geoJson.features.push($scope.markers[i].feature);
+         }
+
+         localStorage.setItem("geoJson", JSON.stringify($scope.geoJson));
+         $scope.showListBottomSheet('Zapisane w localStorage!');
+
+     }
+
+     function clearInfoBox() {
+         $scope.$apply(function() {
+             $scope.marker_info.id = '';
+             $scope.marker_info.name = '';
+             $scope.marker_info.description = '';
+             $scope.info_box = false;
+         });
+     }
+
+     $scope.editMarkerModal = function(event) {
+
+         $scope.marker_info.name = $scope.clicked_marker.feature.properties.name;
+
+         $scope.marker_info.description = $scope.clicked_marker.feature.properties.description
+
+         $mdDialog.show({
+
+             targetEvent: event,
+             scope: $scope,
+             preserveScope: true,
+             template: '<md-dialog>' +
+                 '  <md-dialog-content class="padding">' +
+                 '   <md-content layout-padding>' +
+                 '   <form name="projectForm">' +
+                 '   <h5>Wprowadź informacje o lokalizacji marekra</h5>' +
+                 '      <md-input-container class="md-icon-float md-block">' +
+                 '       <label>Nazwa</label>' +
+                 '           <input ng-model="marker_info.name" type="text" required md-no-asterisk>' +
+                 '           <div ng-messages="marker_info.name.$error">' +
+                 '               <div ng-message="required">To pole jest wymagane.</div>' +
+                 '            </div>' +
+                 '     </md-input-container>' +
+                 '      <md-input-container class="md-icon-float md-block">' +
+                 '       <label>Opis</label>' +
+                 '           <textarea ng-model="marker_info.description" rows="1"></textarea>' +
+                 '     </md-input-container>' +
+                 '     </md-content>' +
+                 '<md-dialog-actions><md-button class="md-primary md-button ng-scope md-default-theme md-ink-ripple" ng-click="hide()" type="submit">Zapisz</md-button><md-button class="md-primary md-button ng-scope md-default-theme md-ink-ripple" ng-click="cancel()">Anuluj</md-button></md-dialog-actions>' +
+                 '</form>' +
+                 '</md-dialog-content></md-dialog>',
+             controller: function($scope, $mdDialog) {
+
+                 $scope.closeDialog = function() {
+                     $mdDialog.hide();
+                 };
+
+                 $scope.hide = function() {
+                     if ($scope.marker_info.name != '') {
+                         $mdDialog.hide();
+                         $scope.saveMarkerInfo();
+                     }
+
+                 };
+                 $scope.cancel = function() {
+                     $mdDialog.cancel();
+                 };
+                 $scope.answer = function() {
+
+                     $mdDialog.hide();
+
+                 };
+             }
+         });
+     };
+
+      $scope.initClearMarkers = function() {
+
+        $mdDialog.show({
+
+             scope: $scope,
+             preserveScope: true,
+             template: '<md-dialog>' +
+                 '  <md-dialog-content class="padding">' +
+                 '   <md-content layout-padding>' +
+                 '   <h5>Potwierdź usunięcie markerów</h5>' +
+                 '   <span>Wybierz jedną z opcji</span>' +
+                 '<md-dialog-actions><md-button class="md-primary md-button ng-scope md-default-theme md-ink-ripple" ng-click="cancel()" >Anuluj</md-button>' +
+                 '<md-dialog-actions><md-button class="md-primary md-button ng-scope md-default-theme md-ink-ripple" ng-click="fromMap()" >Mapa</md-button>' +
+                 '<md-button class="md-primary md-button ng-scope md-default-theme md-ink-ripple" ng-click="fromMapLocalstorage()">Mapa i localStorage</md-button></md-dialog-actions>' +
+                 '</md-dialog-content></md-dialog>',
+             controller: function($scope, $mdDialog) {
+
+                 $scope.fromMapLocalstorage = function() {
+                     $mdDialog.hide();
+                      localStorage.geoJson = JSON.stringify('{"type": "FeatureCollection","features": []}');
+                       $scope.label_id = 0;
+                      for (var i = 0; i < $scope.markers.length; i++) {
+                          $scope.markers[i].setMap(null);
+                       }
+                      $scope.markers = [];
+                      $scope.temporary_markers = {};
+                      $scope.saveDelBtnStatus();
+                      $scope.showListBottomSheet('Markery usunięte z mapy i localStorage')
+
+                 };
+                 $scope.cancel = function() {
+                     $mdDialog.cancel();
+                 };
+                 $scope.fromMap = function() {
+                      $mdDialog.hide();
+                      $scope.label_id = 0;
+                      for (var i = 0; i < $scope.markers.length; i++) {
+                          $scope.markers[i].setMap(null);
+                       }
+                      $scope.markers = [];
+                      $scope.temporary_markers = {};
+                      $scope.saveDelBtnStatus();
+                      $scope.showListBottomSheet('Markery usunięte z mapy')
                  
-                };
-              } 
-            });
-          };
 
-        $scope.addLocationModal = function(ev) {
-          
-            var confirm = $mdDialog.prompt()
-              .title('Znajdź nową lokalizację i dodaj do mapy')
-              .placeholder('Adres')
-              .ariaLabel('Adres')
-              .initialValue('Uniwersytet Ekonomiczny w Krakowie')
-              .targetEvent(ev)
-              .ok('Wyszukaj')
-              .cancel('Anuluj');
+                 };
+             }
+         });
+     };
 
-            $mdDialog.show(confirm).then(function(result) {
-                $scope.geocoder_result = result;
-                geocodeAddress( $scope.geocoder, $scope.map_notes);
-            }, function() {
+     $scope.addLocationModal = function(ev) {
+
+         var confirm = $mdDialog.prompt()
+             .title('Znajdź nową lokalizację i dodaj do mapy')
+             .placeholder('Adres')
+             .ariaLabel('Adres')
+             .initialValue('Uniwersytet Ekonomiczny w Krakowie')
+             .targetEvent(ev)
+             .ok('Wyszukaj')
+             .cancel('Anuluj');
+
+         $mdDialog.show(confirm).then(function(result) {
+             $scope.geocoder_result = result;
+             geocodeAddress($scope.geocoder, $scope.map_notes);
+         }, function() {
+
+         });
+     };
+
+     $scope.showListBottomSheet = function(event) {
+
+         $mdToast.show(
+             $mdToast.simple()
+             .textContent(event)
+             .position('bottom left')
+             .hideDelay(1500)
+         );
+     };
+
+     $scope.saveDelBtnStatus = function() {
        
-            });
-        };
+     if ($scope.markers.length == 0) {
+          $scope.saveDisabled = true;
+          $scope.delDisabled = true;
+        } else {
+          $scope.saveDisabled = false;
+          $scope.delDisabled = false;
 
+        }
+     }
 
-        
-      $scope.showListBottomSheet = function(event) {
-          
-          $mdToast.show(
-          $mdToast.simple()
-               .textContent(event)
-               .position( 'bottom left' )
-               .hideDelay(1500)
-           );
-      };
+     if (localStorage.geoJson === undefined) {
+         localStorage.geoJson = JSON.stringify($scope.geoJson);
+     } else {
+         var parseGeoJson = JSON.parse(localStorage.geoJson);
 
-    });
+         if (parseGeoJson.features !== undefined) {
+             //NOWY MARKER - PRZEŁADOWANIE TABLICY Z MARKERAMI 
+             var i = 0;
+             for (let x of Object.keys(parseGeoJson.features)) {
+                 i++;
+                 $scope.label_id++;
+                 var marker = new google.maps.Marker({
+                     position: parseGeoJson.features[x].geometry.position,
+                     map: $scope.map_notes,
+                     draggable: true,
+                     id: parseGeoJson.features[x].properties.id,
+                     feature: {
+                         "type": "Feature",
+                         "geometry": {
+                             "type": "Point",
+                             "coordinates": [parseGeoJson.features[x].geometry.coordinates[0], parseGeoJson.features[x].geometry.coordinates[1]],
+                             "position": parseGeoJson.features[x].geometry.position
+                         },
+                         "properties": {
+                             "id": parseGeoJson.features[x].properties.id,
+                             "name": parseGeoJson.features[x].properties.name,
+                             "description": parseGeoJson.features[x].properties.description,
+                             "label": parseGeoJson.features[x].properties.label
+                         }
+                     },
+                     label: parseGeoJson.features[x].properties.label,
+                     icon: 'http://klaudiusz.eu/travelblog/images/marker.png'
+                 });
+                 $scope.temporary_markers[parseGeoJson.features[x].properties.id] = marker;
 
-    app.controller("usersCtrl", function ($scope) {
-        $scope.msg = "Osoby";
-    });
+                 $scope.markers = [];
 
-   
+                 for (let x of Object.keys($scope.temporary_markers).sort()) {
 
-    app.config(function($mdThemingProvider) {
-      var customBlueMap =     $mdThemingProvider.extendPalette('light-blue', {
-        'contrastDefaultColor': 'light',
-        'contrastDarkColors': ['50'],
-        '50': 'ffffff'
-      });
-      $mdThemingProvider.definePalette('customBlue', customBlueMap);
-      $mdThemingProvider.theme('default')
-        .primaryPalette('customBlue', {
-          'default': '500',
-          'hue-1': '50'
-        })
-        .accentPalette('pink');
-      $mdThemingProvider.theme('input', 'default')
-            .primaryPalette('grey')
-    }); 
+                     $scope.markers.push($scope.temporary_markers[x]);
+                 }
 
-  
+                 $scope.markerService(marker);
 
-    app.controller('BottomNotesMenuCtrl', function() {
-      this.topDirections = ['left', 'up'];
-      this.bottomDirections = ['down', 'right'];
+             }
 
-      this.isOpen = false;
+         }
+     }
+      
+     $scope.saveDelBtnStatus();
+    
+    },100);
+ });
 
-      this.availableModes = ['md-fling', 'md-scale'];
-      this.selectedMode = 'md-fling';
+ app.controller("usersCtrl", function($scope) {
+     $scope.msg = "Osoby";
+ });
 
-      this.availableDirections = ['up', 'down', 'left', 'right'];
-      this.selectedDirection = 'up';
-    });
+ app.config(function($mdThemingProvider) {
+     var customBlueMap = $mdThemingProvider.extendPalette('light-blue', {
+         'contrastDefaultColor': 'light',
+         'contrastDarkColors': ['50'],
+         '50': 'ffffff'
+     });
+     $mdThemingProvider.definePalette('customBlue', customBlueMap);
+     $mdThemingProvider.theme('default')
+         .primaryPalette('customBlue', {
+             'default': '500',
+             'hue-1': '50'
+         })
+         .accentPalette('pink');
+     $mdThemingProvider.theme('input', 'default')
+         .primaryPalette('grey')
+ });
 
-    app.directive('userAvatar', function() {
-      return {
-        replace: true,
-        template: '<img width="70" ng-src="images/klaudiusz.jpg" alt="klaudiusz" class="user-avatar">'
-      };
-    });
-  </script>
+ app.controller('BottomNotesMenuCtrl', function() {
+     this.topDirections = ['left', 'up'];
+     this.bottomDirections = ['down', 'right'];
+
+     this.isOpen = false;
+
+     this.availableModes = ['md-fling', 'md-scale'];
+     this.selectedMode = 'md-fling';
+
+     this.availableDirections = ['up', 'down', 'left', 'right'];
+     this.selectedDirection = 'up';
+ });
+
+ app.directive('userAvatar', function() {
+     return {
+         replace: true,
+         template: '<img width="70" ng-src="images/klaudiusz.jpg" alt="klaudiusz" class="user-avatar">'
+     };
+ });
+</script>
   
    
 </body>
