@@ -13,3 +13,6 @@ Strona wykonana w technologi SPA z wykorzystaniem frameworków AngularJS i Mater
 Działa jako integralna część aplikacji mobilnej, wykorzystywanej do zdalnego dodawania informacji o odwiedzanych miejscach.
 Silnikiem bazodanowym jest Wordpress, który wystawia źródło danch do aplikacji w postaci obiektu JSON. 
 Aplikacja wykorzystuje localstorage do przechowywania GeoJsona z notatkami na mapie.
+
+### AUTOR
+Klaudiusz Marszałek
