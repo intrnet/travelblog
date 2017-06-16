@@ -15,4 +15,4 @@ Silnikiem bazodanowym jest Wordpress, który wystawia źródło danch do aplikac
 Aplikacja wykorzystuje localstorage do przechowywania GeoJsona z notatkami na mapie.
 
 ### AUTOR 
-Klaudiusz
+Klaudiusz Marszałek
