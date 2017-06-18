@@ -1,143 +1,75 @@
-<md-content ng-controller="notesCtrl" layout-fill layout="column" id="notes">  <!-- ng-init="readyMap()" -->
-     
-  <div layout="row" style="height:116px;">
-   <md-content layout="column" flex="100">
-  
-       <md-content layout="row" style="height:70px;" ng-show="!showSearch" >
-          <md-toolbar flex="100" layout="column" ng-show="!showSearch">
-            <div class="md-toolbar-tools">
-              <md-button ng-click="toggleSidenav('left')" hide-gt-md aria-label="Menu">
-                <ng-md-icon icon="menu"></ng-md-icon>
-              </md-button>
-              <h3>
-                Notatki
-              </h3>
-              <span flex></span>
-              <md-button aria-label="Szukaj" ng-click="showSearch = !showSearch">
-                <ng-md-icon icon="search"></ng-md-icon>
-              </md-button>
-            </div>
-          </md-toolbar>
-        </md-content>
-
-         <md-content layout="row" style="height:116px;" ng-show="showSearch">
-          <md-toolbar class="md-hue-1" ng-show="showSearch" flex="100" layout="column">
-            <div class="md-toolbar-tools" layout="row" flex="100">
-              
-              <md-button ng-click="showSearch = !showSearch" aria-label="Cofnij">
-                <ng-md-icon icon="arrow_back"></ng-md-icon>
-              </md-button>
-              
-              <h3>Cofnij</h3>
-              <span layout="row" flex="5"></span>
-              <md-input-container md-theme="input" layout="row" flex="95">
-                <label>&nbsp;</label>
-                <input ng-model="search.who" placeholder="szukaj">
-              </md-input-container>
-
-              <md-button aria-label="Szukaj" ng-click="showSearch = !showSearch">
-                <ng-md-icon icon="search"></ng-md-icon>
-              </md-button>
-
-           </div>
-          </md-toolbar>
-        </md-content>
-
-         <md-content layout="row" style="height:60px;" ng-show="!showSearch">
-          <md-toolbar layout="column" class="md-hue-1">
-              <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
-                <md-nav-item md-nav-href="#places" name="places">Ostatnie miejsca</md-nav-item>
-                <md-nav-item md-nav-href="#notes" name="notes">Notatki</md-nav-item>  
-              </md-nav-bar>
-           </md-toolbar>
-          </md-content>
-
-      </md-content>
-  </div>
+<md-content ng-controller="notesCtrl" layout-fill layout="column" id="notes">
  
-  <div layout="row" style="height:100%">
+                <md-toolbar layout="row">
+                    <div class="md-toolbar-tools">
+                        <md-button ng-click="toggleSidenav('left')" hide-gt-lg aria-label="Menu">
+                            <ng-md-icon icon="menu"></ng-md-icon>
+                        </md-button>
+                        <h3>{{page_title}}</h3>
+                       
+                    </div>
+                </md-toolbar>
+        <md-content layout="row" flex="100" ng-cloak class="map_box" ng-controller="BottomNotesMenuCtrl as menu">
+           <md-content layout="column" flex>
+            <md-content layout="column" flex id="map_notes"></md-content>
+             <md-fab-speed-dial md-open="menu.isOpen" md-direction="{{menu.selectedDirection}}" ng-class="menu.selectedMode" layout="column" ng-cloak>
+                    <md-fab-trigger>
+                        <md-button class="md-fab md-accent" aria-label="Dodaj notatkę" ng-class="menu.selectedMode">
+                            <ng-md-icon icon="menu"></ng-md-icon>
+                        </md-button>
+                    </md-fab-trigger>
 
-    <div layout="column" flex="75" hide show-gt-sm ng-cloak class="map_box">
-         <div ng-controller="BottomNotesMenuCtrl as menu" layout="column" ng-cloak>
-  
-      <md-fab-speed-dial md-open="menu.isOpen" md-direction="{{menu.selectedDirection}}" ng-class="menu.selectedMode">
-        <md-fab-trigger>
-            <md-button class="md-fab md-accent" aria-label="Dodaj notatkę" ng-class="menu.selectedMode">
-              <ng-md-icon icon="menu"></ng-md-icon>
-            </md-button>  
-        </md-fab-trigger>
-
-        <md-fab-actions class="menu_action_buttons">
-        <md-button aria-label="Usuń wszystko" class="md-fab md-hue-2 md-mini" ng-click="initClearMarkers()" ng-model="delDisabled" ng-disabled="delDisabled">
-           <md-tooltip md-direction="left">Usuń wszystko</md-tooltip>
-           <ng-md-icon icon="clear"></ng-md-icon>
-          </md-button>
-           <md-button aria-label="Zapisz wszystko" class="md-fab md-hue-2 md-mini" ng-click="saveToGeoJson()" ng-model="saveDisabled" ng-disabled="saveDisabled">
-           <md-tooltip md-direction="left">Zapisz w lokalstorage</md-tooltip>
-           <ng-md-icon icon="save"></ng-md-icon>
-          </md-button>
-          <md-button aria-label="Usuń lokalizację" class="md-fab md-hue-2 md-mini" ng-model="disable_edit_location_button" ng-disabled="disable_edit_location_button" ng-click="delMarker()">
-          <md-tooltip md-direction="left">Usuń lokalizację</md-tooltip>
-           <ng-md-icon icon="delete"></ng-md-icon>
-          </md-button>
-          <md-button aria-label="Edytuj lokalizację" class="md-fab md-hue-2 md-mini" ng-model="disable_edit_location_button" ng-click="editMarkerModal($event)" ng-disabled="disable_edit_location_button">
-            <md-tooltip md-direction="left">Edytuj lokalizację</md-tooltip>
-            <ng-md-icon icon="edit_location"></ng-md-icon>
-          </md-button>
-          <md-button aria-label="Dodaj lokalizację" class="md-fab md-primary md-mini" ng-click="addLocationModal($event)">
-           <md-tooltip md-direction="left">Dodaj lokalizację</md-tooltip>
-           <ng-md-icon icon="add_location"></ng-md-icon>
-          </md-button>
-          
-          
-         
-        </md-fab-actions>
-      </md-fab-speed-dial>
- 
-</div>
-      <md-content layout="column" flex="100" id="map_notes" ></md-content>
-
-    </div>
-
-
-
-    <div flex class="md-whiteframe-z2" layout="column">
-      <md-content layout="column" layout="column" flex="100">
-
- 
-
- 
-            <div class="mdl-layout mdl-js-layout mdl-color--grey-100" hide-sm hide-xs>
+                    <md-fab-actions class="menu_action_buttons">
+                        <md-button aria-label="Usuń wszystko" class="md-fab md-hue-2 md-mini" ng-click="initClearMarkers()" ng-model="delDisabled" ng-disabled="delDisabled">
+                            <md-tooltip md-direction="left">Usuń wszystko</md-tooltip>
+                            <ng-md-icon icon="clear"></ng-md-icon>
+                        </md-button>
+                        <md-button aria-label="Zapisz wszystko" class="md-fab md-hue-2 md-mini" ng-click="saveToGeoJson()" ng-model="saveDisabled" ng-disabled="saveDisabled">
+                            <md-tooltip md-direction="left">Zapisz w lokalstorage</md-tooltip>
+                            <ng-md-icon icon="save"></ng-md-icon>
+                        </md-button>
+                        <md-button aria-label="Usuń lokalizację" class="md-fab md-hue-2 md-mini" ng-model="disable_edit_location_button" ng-disabled="disable_edit_location_button" ng-click="delMarker()">
+                            <md-tooltip md-direction="left">Usuń lokalizację</md-tooltip>
+                            <ng-md-icon icon="delete"></ng-md-icon>
+                        </md-button>
+                        <md-button aria-label="Edytuj lokalizację" class="md-fab md-hue-2 md-mini" ng-model="disable_edit_location_button" ng-click="editMarkerModal($event)" ng-disabled="disable_edit_location_button">
+                            <md-tooltip md-direction="left">Edytuj lokalizację</md-tooltip>
+                            <ng-md-icon icon="edit_location"></ng-md-icon>
+                        </md-button>
+                        <md-button aria-label="Dodaj lokalizację" class="md-fab md-primary md-mini" ng-click="addLocationModal($event)">
+                            <md-tooltip md-direction="left">Dodaj lokalizację</md-tooltip>
+                            <ng-md-icon icon="add_location"></ng-md-icon>
+                        </md-button>                
+                    </md-fab-actions>
+                </md-fab-speed-dial>
+              </md-content>
+            <md-sidenav layout="column" flex class="md-whiteframe-z2 md-sidenav-right" md-component-id="right" md-is-locked-open="$mdMedia('gt-md')">
+                <div class="mdl-layout mdl-js-layout mdl-color--grey-100" hide-sm hide-xs>
                     <main class="mdl-layout__content">
                         <div class="mdl-grid" data-ng-repeat="marker in markers">
                             <div class="mdl-card mdl-cell mdl-cell--12-col mdl-shadow--2dp">
-                                 
                                 <div class="mdl-card__title">
                                     <h1 class="mdl-card__title-text">{{marker.label}}. {{marker.feature.properties.name}}</h1>
                                 </div>
                                 <div class="mdl-card__supporting-text">
-                                     <p ng-bind-html="marker.feature.properties.description"></p>  
+                                    <p ng-bind-html="marker.feature.properties.description"></p>
                                 </div>
-                                 
-                                      <div class="mdl-card__actions mdl-card--border">
-                                    
-                                                     
-                                                     <button class="mdl-button mdl-button--icon mdl-button--colored" ng-click="clickedMarker(marker); editMarkerModal();">  <ng-md-icon icon="edit_location"></ng-md-icon></button>
-                                                      <button class="mdl-button mdl-button--icon mdl-button--colored" ng-click="delMarker(marker)"> <ng-md-icon icon="delete"></ng-md-icon></button>
-                                                      <button class="mdl-button mdl-button--icon mdl-button--colored" ng-click="reopenInfowindow(marker)"> <ng-md-icon icon="pin_drop"></ng-md-icon></button>
-                    
-                                      </div>         
+                                <div class="mdl-card__actions mdl-card--border">
+                                    <button class="mdl-button mdl-button--icon mdl-button--colored" ng-click="clickedMarker(marker); editMarkerModal();">
+                                        <ng-md-icon icon="edit_location"></ng-md-icon>
+                                    </button>
+                                    <button class="mdl-button mdl-button--icon mdl-button--colored" ng-click="delMarker(marker)">
+                                        <ng-md-icon icon="delete"></ng-md-icon>
+                                    </button>
+                                    <button class="mdl-button mdl-button--icon mdl-button--colored" ng-click="reopenInfowindow(marker)">
+                                        <ng-md-icon icon="pin_drop"></ng-md-icon>
+                                    </button>
 
-
+                                </div>
                             </div>
                         </div>
                     </main>
                 </div>
-               
-
-         
-      </md-content>
-  </div>
-
- 
+           </md-sidenav>
+    </md-content>
 </md-content>

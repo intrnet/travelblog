@@ -1,0 +1,11 @@
+<div ng-controller="infoCtrl" layout-fill layout="column" id="info">
+    <md-toolbar layout="row">
+        <div class="md-toolbar-tools">
+            <md-button ng-click="toggleSidenav('left')" hide-gt-lg aria-label="Menu">
+                <ng-md-icon icon="menu"></ng-md-icon>
+            </md-button>
+            <h3>{{page_title}}</h3>
+        </div>
+    </md-toolbar>
+    <md-content layout="row" flex="100" ng-cloak></md-content>
+</div>

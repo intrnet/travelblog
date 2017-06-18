@@ -1,127 +1,38 @@
-<md-content ng-controller="placesCtrl" layout-fill layout="column" id="places">  <!-- ng-init="readyMap()" -->
-      <md-button class="md-fab md-fab-bottom-right" aria-label="Dodaj notatkę" ng-click="showAdd($event)">
-        <ng-md-icon icon="add"></ng-md-icon>
-      </md-button>  
-  <div layout="row" style="height:116px;">
-   <md-content layout="column" flex="100">
-  
-       <md-content layout="row" style="height:70px;" ng-show="!showSearch" >
-          <md-toolbar flex="100" layout="column" ng-show="!showSearch">
-            <div class="md-toolbar-tools">
-              <md-button ng-click="toggleSidenav('left')" hide-gt-md aria-label="Menu">
+<md-content ng-controller="placesCtrl" layout-fill layout="column" id="places">
+    <md-toolbar layout="row">
+        <div class="md-toolbar-tools">
+            <md-button ng-click="toggleSidenav('left')" hide-gt-lg aria-label="Menu">
                 <ng-md-icon icon="menu"></ng-md-icon>
-              </md-button>
-              <h3>
-                Miejsca
-              </h3>
-              <span flex></span>
-              <md-button aria-label="Szukaj" ng-click="showSearch = !showSearch">
-                <ng-md-icon icon="search"></ng-md-icon>
-              </md-button>
+            </md-button>
+            <h3>{{page_title}}</h3>
+        </div>
+    </md-toolbar>
+    <md-content layout="row" flex="100" ng-cloak>
+        <md-content layout="column" flex id="map"></md-content>
+        <md-sidenav layout="column" flex class="md-whiteframe-z2 md-sidenav-right" md-component-id="right" md-is-locked-open="$mdMedia('gt-md')">
+            <div class="mdl-layout mdl-js-layout mdl-color--grey-100" hide-sm hide-xs>
+                <main class="mdl-layout__content">
+                    <div class="mdl-grid" ng-repeat="marker in markers">
+                        <div class="mdl-card mdl-cell mdl-cell--12-col mdl-shadow--2dp">
+                            <figure class="mdl-card__media">
+                                <img src="{{marker.thumbnail}}" alt="" />
+                            </figure>
+                            <div class="mdl-card__title">
+                                <h1 class="mdl-card__title-text">{{marker.title}}</h1>
+                            </div>
+                            <div class="mdl-card__supporting-text">
+                                <p ng-bind-html="marker.excerpt"></p>
+                            </div>
+                            <div class="mdl-card__actions mdl-card--border">
+                                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" ng-click="showPlaceInfo(marker.id)">Zobacz wpis</a>
+                                <div class="mdl-layout-spacer"></div>
+                                <button ng-disabled="marker.isposition" class="mdl-button mdl-button--icon mdl-button--colored" ng-click="openInfoWindow($event, marker)"><i class="material-icons">pin_drop</i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </main>
             </div>
-          </md-toolbar>
-        </md-content>
-
-         <md-content layout="row" style="height:116px;" ng-show="showSearch">
-          <md-toolbar class="md-hue-1" ng-show="showSearch" flex="100" layout="column">
-            <div class="md-toolbar-tools" layout="row" flex="100">
-              
-              <md-button ng-click="showSearch = !showSearch" aria-label="Cofnij">
-                <ng-md-icon icon="arrow_back"></ng-md-icon>
-              </md-button>
-              
-              <h3>Cofnij</h3>
-              <span layout="row" flex="5"></span>
-              <md-input-container md-theme="input" layout="row" flex="95">
-                <label>&nbsp;</label>
-                <input ng-model="search.who" placeholder="szukaj">
-              </md-input-container>
-
-              <md-button aria-label="Szukaj" ng-click="showSearch = !showSearch">
-                <ng-md-icon icon="search"></ng-md-icon>
-              </md-button>
-
-           </div>
-          </md-toolbar>
-        </md-content>
-
-         <md-content layout="row" style="height:60px;" ng-show="!showSearch">
-          <md-toolbar layout="column" class="md-hue-1">
-              <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
-                <md-nav-item md-nav-href="#places" name="places">Ostatnie miejsca</md-nav-item>
-                <md-nav-item md-nav-href="#notes" name="notes">Notatki</md-nav-item>  
-              </md-nav-bar>
-           </md-toolbar>
-          </md-content>
-
-      </md-content>
-  </div>
- 
-  <div layout="row" style="height:100%">
-    <div layout="column" flex="75" hide show-gt-sm ng-cloak>
-      <md-content layout="column" flex="100" id="map"></md-content>
-    </div>
-    <div flex class="md-whiteframe-z2" layout="column">
-      <md-content layout="column" layout="column" flex="100">
-
-         
-
-                  <div class="mdl-layout mdl-js-layout mdl-color--grey-100" hide-sm hide-xs>
-                    <main class="mdl-layout__content">
-                        <div class="mdl-grid" ng-repeat="marker in markers">
-                            <div class="mdl-card mdl-cell mdl-cell--12-col mdl-shadow--2dp">
-                                <figure class="mdl-card__media">
-                                    <img src="{{marker.thumbnail}}" alt="" />
-                                </figure>
-                                <div class="mdl-card__title">
-                                    <h1 class="mdl-card__title-text">{{marker.title}}</h1>
-                                </div>
-                                <div class="mdl-card__supporting-text">
-                                     <p ng-bind-html="marker.excerpt"></p>  
-                                </div>
-                                                <div class="mdl-card__actions mdl-card--border">
-                                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" ng-href="#place/{{marker.id}}">Czytaj więcej</a>
-                                    <div class="mdl-layout-spacer"></div>
-                                        <button class="mdl-button mdl-button--icon mdl-button--colored" ng-click="openInfoWindow($event, marker)"><i class="material-icons">pin_drop</i></button>
-                                                    <button class="mdl-button mdl-button--icon mdl-button--colored"><i class="material-icons">share</i></button>
-                                      </div>
-                            </div>
-                        </div>
-                    </main>
-                </div>
-
-
-
-                <div class="mdl-layout mdl-js-layout mdl-color--grey-100" hide-gt-sm>
-                    <main class="mdl-layout__content">
-                        <div layout="row" layout-wrap >
-                            <div flex="33" ng-repeat="marker in markers"> 
-                            <div class="mdl-card mdl-cell mdl-cell--12-col mdl-shadow--2dp">
-                                <figure class="mdl-card__media">
-                                    <img src="{{marker.thumbnail}}" alt="" />
-                                </figure>
-                                <div class="mdl-card__title">
-                                    <h1 class="mdl-card__title-text">{{marker.title}}</h1>
-                                </div>
-                                <div class="mdl-card__supporting-text">
-                                   
-                                    <p ng-bind-html="marker.excerpt"></p> 
-                                </div>
-                                                <div class="mdl-card__actions mdl-card--border">
-                                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" ng-href="#place/{{marker.id}}">Czytaj więcej</a>
-                                    <div class="mdl-layout-spacer"></div>
-                                    
-                                                    <button class="mdl-button mdl-button--icon mdl-button--colored"><i class="material-icons">share</i></button>
-                                      </div>
-                            </div>
-                            </div>
-                        </div>
-                    </main>
-                </div>
-           
-               
-
-         
-      </md-content>
-  </div>
+        </md-sidenav>
+    </md-content>
 </md-content>

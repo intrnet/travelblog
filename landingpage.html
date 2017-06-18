@@ -1,0 +1,22 @@
+
+<div ng-controller="landingpageCtrl" id="landing" layout-fill layout="column" >
+    <div style="height:76px; width: 330px; position:absolute; top:50%; left:50%; margin-left:-165px; margin-top:-38px; z-index:100;">
+        <span style="position:relative; top: 110px; left: 130px; color: white;">
+<a ng-href="http://klaudiusz.eu/travelblog/#/places" href="http://klaudiusz.eu/travelblog/#/places" style="text-decoration:none; color:white;">
+wejście
+<button  class="mdl-button mdl-button--icon mdl-button--colored"><i class="material-icons">forward</i></button>
+</a>
+</span>
+        <a ng-href="http://klaudiusz.eu/travelblog/#/places" href="http://klaudiusz.eu/travelblog/#/places">
+
+            <img style="width:100%;" src="images/travelblog-w.svg" title="Travel Blog by Klaudiusz" alt="Travel Blog by Klaudiusz">
+        </a>
+    </div>
+    <div class="sliderContainer fullWidth clearfix">
+        <div id="full-width-slider" class="royalSlider heroSlider rsMinW">
+            <div class="rsContent" ng-repeat="slide in slidebox">
+                <img class="rsImg" src="{{slide.thumbnail_images.full.url}}" alt="" />
+            </div>
+        </div>
+    </div> 
+</div>
